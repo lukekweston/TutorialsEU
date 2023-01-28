@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillAfter="true">
+<!--    FillAfter will set the items location after an animation-->
+
+<!--Translate basically means move something-->
+<!--    interporlator sets the movement type-->
+    <translate
+        android:duration="3000"
+        android:fromXDelta="0%p"
+        android:fromYDelta="0%p"
+        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+        android:toXDelta="0%p"
+        android:toYDelta="50%p"
+        />
+<!--    add a spin for the lols-->
+    <rotate
+        android:duration="1000"
+        android:fromDegrees="0"
+        android:pivotX="50%p"
+        android:pivotY="50%p"
+        android:toDegrees="360"
+        android:interpolator="@android:anim/accelerate_interpolator"
+        />
+<!--    Make the text fade in-->
+    <alpha
+        android:duration="2000"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0"
+        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+        />
+</set>
