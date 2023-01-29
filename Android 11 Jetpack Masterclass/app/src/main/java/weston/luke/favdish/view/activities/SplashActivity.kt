@@ -1,4 +1,4 @@
-package weston.luke.favdish
+package weston.luke.favdish.view.activities
 
 import android.content.Intent
 import android.os.Build
@@ -10,6 +10,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import weston.luke.favdish.R
 import weston.luke.favdish.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {
