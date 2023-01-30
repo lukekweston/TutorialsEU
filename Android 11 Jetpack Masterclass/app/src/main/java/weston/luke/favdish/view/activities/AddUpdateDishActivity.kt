@@ -10,18 +10,26 @@ import weston.luke.favdish.R
 import weston.luke.favdish.databinding.ActivityAddUpdateDishBinding
 import weston.luke.favdish.databinding.DialogCustomImageSelectionBinding
 import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
+import android.provider.MediaStore
 import android.provider.Settings
-import android.util.Log
-import com.karumi.dexter.DexterBuilder
+import androidx.activity.result.ActivityResult
+import androidx.core.content.ContextCompat
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.karumi.dexter.listener.single.PermissionListener
 
+@Suppress("DEPRECATION")
 class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mBinding: ActivityAddUpdateDishBinding
@@ -63,23 +71,24 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
             DialogCustomImageSelectionBinding.inflate(layoutInflater)
         dialog.setContentView(binding.root)
 
-
+//!!!!!!! newer devices after sdk 28 do not need the permissions to write to external storage - do not need to check this
         binding.tvCamera.setOnClickListener {
 //            Check multiple permissions with dexter
             Dexter.withContext(this@AddUpdateDishActivity).withPermissions(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA
             ).withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-//                    Checks all permissions above are granted
-                    if (report!!.areAllPermissionsGranted()) {
+// Let only runs the code when report is not null - good to know
+                    report?.let {
+                        //                    Checks all permissions above are granted
+                        if (report.areAllPermissionsGranted()) {
 //                        Need to specify class as in listener
-                        Toast.makeText(
-                            this@AddUpdateDishActivity,
-                            "you have camera permission now",
-                            Toast.LENGTH_LONG
-                        ).show()
+                            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                            startActivityForResult(intent, CAMERA)
+
+                        }
                     }
                 }
 
@@ -96,30 +105,34 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         binding.tvGallery.setOnClickListener {
-            Dexter.withContext(this@AddUpdateDishActivity).withPermissions(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            ).withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-//                    Checks all permissions above are granted
-                    Log.e("hmm", "hmmm")
-                    if (report!!.areAllPermissionsGranted()) {
-                        Log.e("sajdjsadkkjsadkjsadk", "sajhdkjhsadkjsad")
-//                        Need to specify class as in listener
-                        Toast.makeText(
-                            this@AddUpdateDishActivity,
-                            "you have GALLERY permission now",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
+            Dexter.withContext(this@AddUpdateDishActivity).withPermission(
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ).withListener(object : PermissionListener {
+                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
+                    Toast.makeText(
+                        this@AddUpdateDishActivity,
+                        "you have the permission to select an image",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                }
+
+                override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
+                    Toast.makeText(
+                        this@AddUpdateDishActivity,
+                        "you have denied te storage permission now",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
 
                 override fun onPermissionRationaleShouldBeShown(
-                    permissions: MutableList<PermissionRequest>?,
-                    token: PermissionToken?
+                    p0: PermissionRequest?,
+                    p1: PermissionToken?
                 ) {
                     showRationalDialogForPermissions()
                 }
+
+
             }
             ).onSameThread().check()
             //Close the dialog after clicking it
@@ -130,7 +143,7 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    //    Display an alert saying that the user doesn't have the required permissions set
+//    Display an alert saying that the user doesn't have the required permissions set
 //    On positive click go to phone settings to be able to enable permissions - dont need to dismiss this as going to a new display, settings
 //    Negative click - dismiss
     private fun showRationalDialogForPermissions() {
@@ -156,4 +169,21 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
             }.show()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK){
+            if(requestCode == CAMERA){
+                data?.extras?.let {
+                    val thumbnail: Bitmap = data.extras!!.get("data") as Bitmap
+                    mBinding.ivDishImage.setImageBitmap(thumbnail)
+                    mBinding.ivAddDishImage.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_vector_edit))
+                }
+            }
+        }
+    }
+
+
+    companion object{
+        private const val CAMERA = 1
+    }
 }
