@@ -13,13 +13,13 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
+import android.content.Intent.ACTION_PICK
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.provider.Settings
-import androidx.activity.result.ActivityResult
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -109,11 +109,8 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                 Manifest.permission.READ_EXTERNAL_STORAGE
             ).withListener(object : PermissionListener {
                 override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                    Toast.makeText(
-                        this@AddUpdateDishActivity,
-                        "you have the permission to select an image",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    val intent = Intent(ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    startActivityForResult(intent, GALLERY)
 
                 }
 
@@ -179,11 +176,22 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                     mBinding.ivAddDishImage.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_vector_edit))
                 }
             }
+            else if(requestCode == GALLERY){
+                data?.let{
+                    val selectedPhotoUri = data.data
+                    mBinding.ivAddDishImage.setImageURI(selectedPhotoUri)
+                    mBinding.ivAddDishImage.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_vector_edit))
+                }
+            }
+        }
+        else if (resultCode == Activity.RESULT_CANCELED){
+            Log.e("cancelled", "user cancelled image selection")
         }
     }
 
 
     companion object{
         private const val CAMERA = 1
+        private const val GALLERY = 2
     }
 }
