@@ -21,6 +21,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -140,7 +141,7 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-//    Display an alert saying that the user doesn't have the required permissions set
+    //    Display an alert saying that the user doesn't have the required permissions set
 //    On positive click go to phone settings to be able to enable permissions - dont need to dismiss this as going to a new display, settings
 //    Negative click - dismiss
     private fun showRationalDialogForPermissions() {
@@ -168,29 +169,47 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK){
-            if(requestCode == CAMERA){
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == CAMERA) {
                 data?.extras?.let {
                     val thumbnail: Bitmap = data.extras!!.get("data") as Bitmap
-                    mBinding.ivDishImage.setImageBitmap(thumbnail)
-                    mBinding.ivAddDishImage.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_vector_edit))
+                    //Assign and crop image with Glide
+                    Glide.with(this).load(thumbnail)
+                        .centerCrop()
+                        .into(mBinding.ivDishImage)
+
+                    //Update camera to edit icon
+                    mBinding.ivAddDishImage.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            this,
+                            R.drawable.ic_vector_edit
+                        )
+                    )
                 }
-            }
-            else if(requestCode == GALLERY){
-                data?.let{
+            } else if (requestCode == GALLERY) {
+                data?.let {
                     val selectedPhotoUri = data.data
-                    mBinding.ivAddDishImage.setImageURI(selectedPhotoUri)
-                    mBinding.ivAddDishImage.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_vector_edit))
+                    //Assign and crop image with Glide
+                    Glide.with(this).load(selectedPhotoUri)
+                        .centerCrop()
+                        .into(mBinding.ivDishImage)
+
+                    //Update camera to edit icon
+                    mBinding.ivAddDishImage.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            this,
+                            R.drawable.ic_vector_edit
+                        )
+                    )
                 }
             }
-        }
-        else if (resultCode == Activity.RESULT_CANCELED){
+        } else if (resultCode == Activity.RESULT_CANCELED) {
             Log.e("cancelled", "user cancelled image selection")
         }
     }
 
 
-    companion object{
+    companion object {
         private const val CAMERA = 1
         private const val GALLERY = 2
     }
