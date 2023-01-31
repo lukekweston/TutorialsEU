@@ -25,6 +25,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -38,6 +39,9 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.karumi.dexter.listener.single.PermissionListener
+import weston.luke.favdish.databinding.DialogCustomListBinding
+import weston.luke.favdish.util.Constants
+import weston.luke.favdish.view.adapters.CustomListItemAdapter
 import java.io.*
 import java.util.*
 
@@ -54,6 +58,11 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         setUpActionBar()
         //Sets the onclick listener to the onClickListener set up in this class
         mBinding.ivAddDishImage.setOnClickListener(this)
+
+        mBinding.etType.setOnClickListener(this)
+        mBinding.etCategory.setOnClickListener(this)
+        mBinding.etCookingTime.setOnClickListener(this)
+
     }
 
 
@@ -70,6 +79,30 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
             when (v.id) {
                 R.id.iv_add_dish_image -> {
                     customImageSelectionDialog()
+                    return
+                }
+                R.id.et_type -> {
+                    customListItemsDialog(
+                        resources.getString(R.string.title_select_dish_type),
+                        Constants.dishTypes(),
+                        Constants.DISH_TYPE
+                    )
+                    return
+                }
+                R.id.et_category -> {
+                    customListItemsDialog(
+                        resources.getString(R.string.title_select_dish_category),
+                        Constants.dishCategories(),
+                        Constants.DISH_CATEGORY
+                    )
+                    return
+                }
+                R.id.et_cooking_time -> {
+                    customListItemsDialog(
+                        resources.getString(R.string.title_select_dish_cooking_time),
+                        Constants.dishCookTime(),
+                        Constants.DISH_COOKING_TIME
+                    )
                     return
                 }
             }
@@ -207,7 +240,7 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                     Glide.with(this).load(selectedPhotoUri)
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .listener(object: RequestListener<Drawable>{
+                        .listener(object : RequestListener<Drawable> {
                             override fun onLoadFailed(
                                 e: GlideException?,
                                 model: Any?,
@@ -249,7 +282,7 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-//    Will save the image and return the path
+    //    Will save the image and return the path
     private fun saveImageToInternalStorage(bitmap: Bitmap): String {
         val wrapper = ContextWrapper(applicationContext)
 
@@ -259,16 +292,29 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         file = File(file, "${UUID.randomUUID()}.jpg")
 
 //        Write the bitmap into a file
-        try{
+        try {
             val stream: OutputStream = FileOutputStream(file)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
             stream.flush()
             stream.close()
-        }
-        catch (e: IOException){
+        } catch (e: IOException) {
             e.printStackTrace()
         }
         return file.absolutePath
+    }
+
+    private fun customListItemsDialog(title: String, itemsList: List<String>, selection: String) {
+        val customListDialog = Dialog(this)
+        val binding: DialogCustomListBinding = DialogCustomListBinding.inflate(layoutInflater)
+// Makes the customListDialog use the whole Dialog_custom_List.xml file
+        customListDialog.setContentView(binding.root)
+        binding.tvTitle.text = title
+
+        binding.rvList.layoutManager = LinearLayoutManager(this)
+
+        val adapter = CustomListItemAdapter(this, itemsList, selection)
+        binding.rvList.adapter = adapter
+        customListDialog.show()
     }
 
 
