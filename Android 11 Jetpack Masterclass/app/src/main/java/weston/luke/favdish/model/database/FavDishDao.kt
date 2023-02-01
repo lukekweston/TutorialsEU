@@ -12,6 +12,6 @@ interface FavDishDao {
     @Insert
     suspend fun insertFavDishDetails(favDish: FavDish)
 
-    
+
 
 }
