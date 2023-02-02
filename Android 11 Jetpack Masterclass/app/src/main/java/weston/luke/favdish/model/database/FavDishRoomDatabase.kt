@@ -10,6 +10,11 @@ import weston.luke.favdish.model.entities.FavDish
 //Keeps track of migrations
 @Database(entities = [FavDish::class], version = 1)
 abstract class FavDishRoomDatabase : RoomDatabase() {
+
+    abstract fun favDishDao() : FavDishDao
+
+
+
     companion object{
 //        Needs to be a singleton as there should only ever be one instance max of the database
         @Volatile
