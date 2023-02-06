@@ -1,9 +1,7 @@
 package weston.luke.favdish.viewmodel
 
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import weston.luke.favdish.model.database.FavDishRepository
 import weston.luke.favdish.model.entities.FavDish
@@ -16,6 +14,8 @@ class FavDishViewModel(private val repository: FavDishRepository) :ViewModel() {
     fun insert(dish: FavDish) = viewModelScope.launch {
         repository.insertFavDishData(favDish = dish)
     }
+
+    val allDishesList: LiveData<List<FavDish>> = repository.allDishesList.asLiveData()
 }
 
 class FavDishViewModelFactory(private val repository: FavDishRepository) : ViewModelProvider.Factory{
