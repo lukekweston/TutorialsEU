@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Workspace/TutorialsEU/Android 11 Jetpack Masterclass/app/src/main/res/drawable/favorite_button_background.xml" value="0.185" />
         <entry key="..\:/Workspace/TutorialsEU/Android 11 Jetpack Masterclass/app/src/main/res/drawable/ic_add_a_photo.xml" value="0.196" />
         <entry key="..\:/Workspace/TutorialsEU/Android 11 Jetpack Masterclass/app/src/main/res/drawable/ic_all_dishes.xml" value="0.185" />
         <entry key="..\:/Workspace/TutorialsEU/Android 11 Jetpack Masterclass/app/src/main/res/drawable/ic_baseline_camera_alt_24.xml" value="0.2975" />
@@ -17,6 +18,7 @@
         <entry key="..\:/Workspace/TutorialsEU/Android 11 Jetpack Masterclass/app/src/main/res/layout/fragment_all_dishes.xml" value="0.1703125" />
         <entry key="..\:/Workspace/TutorialsEU/Android 11 Jetpack Masterclass/app/src/main/res/layout/fragment_dashboard.xml" value="0.36666666666666664" />
         <entry key="..\:/Workspace/TutorialsEU/Android 11 Jetpack Masterclass/app/src/main/res/layout/fragment_dish_details.xml" value="0.35260416666666666" />
+        <entry key="..\:/Workspace/TutorialsEU/Android 11 Jetpack Masterclass/app/src/main/res/layout/fragment_favourite_dishes.xml" value="0.17760416666666667" />
         <entry key="..\:/Workspace/TutorialsEU/Android 11 Jetpack Masterclass/app/src/main/res/layout/fragment_home.xml" value="0.36666666666666664" />
         <entry key="..\:/Workspace/TutorialsEU/Android 11 Jetpack Masterclass/app/src/main/res/layout/fragment_notifications.xml" value="0.36666666666666664" />
         <entry key="..\:/Workspace/TutorialsEU/Android 11 Jetpack Masterclass/app/src/main/res/layout/item_custom_list.xml" value="0.21041666666666667" />
