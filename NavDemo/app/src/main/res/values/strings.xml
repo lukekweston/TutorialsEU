@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">NavDemo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enter_your_details_below">Enter your details below</string>
+    <string name="verfify_details">VERFIFY DETAILS</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="name">Name</string>
+</resources>
