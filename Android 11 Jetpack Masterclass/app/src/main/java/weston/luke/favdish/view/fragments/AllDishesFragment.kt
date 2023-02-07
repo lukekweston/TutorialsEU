@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import weston.luke.favdish.R
 import weston.luke.favdish.application.FavDishApplication
 import weston.luke.favdish.databinding.FragmentAllDishesBinding
+import weston.luke.favdish.model.entities.FavDish
 import weston.luke.favdish.view.activities.AddUpdateDishActivity
 import weston.luke.favdish.view.activities.MainActivity
 import weston.luke.favdish.view.adapters.FavDishAdapter
@@ -73,8 +74,11 @@ class AllDishesFragment : Fragment() {
 
     }
 
-    fun dishDetails(){
-        findNavController().navigate(AllDishesFragmentDirections.actionNavigationAllDishesToNavigationDishDetails())
+    fun dishDetails(favDish: FavDish){
+        //Pass the favDish as an argument to the new fragment
+        findNavController().navigate(AllDishesFragmentDirections.actionNavigationAllDishesToNavigationDishDetails(
+            favDish
+        ))
 //        Call method from outside the mainActivity from in the fragment
         if(requireActivity() is MainActivity){
             (activity as MainActivity?)?.hideBottomNavigationView()
