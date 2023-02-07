@@ -15,6 +15,7 @@ import weston.luke.favdish.R
 import weston.luke.favdish.application.FavDishApplication
 import weston.luke.favdish.databinding.FragmentAllDishesBinding
 import weston.luke.favdish.view.activities.AddUpdateDishActivity
+import weston.luke.favdish.view.activities.MainActivity
 import weston.luke.favdish.view.adapters.FavDishAdapter
 import weston.luke.favdish.viewmodel.FavDishViewModel
 import weston.luke.favdish.viewmodel.FavDishViewModelFactory
@@ -74,6 +75,18 @@ class AllDishesFragment : Fragment() {
 
     fun dishDetails(){
         findNavController().navigate(AllDishesFragmentDirections.actionNavigationAllDishesToNavigationDishDetails())
+//        Call method from outside the mainActivity from in the fragment
+        if(requireActivity() is MainActivity){
+            (activity as MainActivity?)?.hideBottomNavigationView()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(requireActivity() is MainActivity){
+            (activity as MainActivity?)?.showBottomNavigationView()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
