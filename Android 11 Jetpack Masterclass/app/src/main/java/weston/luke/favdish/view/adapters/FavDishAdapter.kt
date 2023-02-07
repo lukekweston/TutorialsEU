@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import weston.luke.favdish.databinding.ItemDishLayoutBinding
 import weston.luke.favdish.model.entities.FavDish
+import weston.luke.favdish.view.fragments.AllDishesFragment
 
 class FavDishAdapter(private val fragment: Fragment): RecyclerView.Adapter<FavDishAdapter.ViewHolder>() {
 
@@ -27,6 +28,12 @@ class FavDishAdapter(private val fragment: Fragment): RecyclerView.Adapter<FavDi
             .load(dish.image)
             .into(holder.ivDishImage)
         holder.ivTitle.text = dish.title
+
+        holder.itemView.setOnClickListener{
+            if(fragment is AllDishesFragment){
+                fragment.dishDetails()
+            }
+        }
     }
 
     override fun getItemCount(): Int {

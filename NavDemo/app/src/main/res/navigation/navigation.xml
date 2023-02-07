@@ -9,7 +9,7 @@
         android:id="@+id/enterDetailsFragment"
         android:name="weston.luke.navdemo.EnterDetailsFragment"
         android:label="fragment_enter_details"
-        tools:layout="@layout/fragment_enter_details" >
+        tools:layout="@layout/fragment_enter_details">
         <action
             android:id="@+id/action_enterDetailsFragment_to_verifyDetailsFragment"
             app:destination="@id/verifyDetailsFragment" />
@@ -18,5 +18,15 @@
         android:id="@+id/verifyDetailsFragment"
         android:name="weston.luke.navdemo.VerifyDetailsFragment"
         android:label="fragment_verify_details"
-        tools:layout="@layout/fragment_verify_details" />
+        tools:layout="@layout/fragment_verify_details">
+        <argument
+            android:name="name"
+            android:defaultValue='""'
+            app:argType="string" />
+        <argument
+            android:name="mobileNumber"
+            android:defaultValue="0L"
+            app:argType="long" />
+    </fragment>
+
 </navigation>

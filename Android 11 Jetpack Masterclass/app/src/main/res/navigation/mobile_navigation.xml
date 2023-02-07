@@ -10,6 +10,9 @@
         android:name="weston.luke.favdish.view.fragments.AllDishesFragment"
         android:label="@string/title_all_dishes"
         tools:layout="@layout/fragment_all_dishes" >
+        <action
+            android:id="@+id/action_navigation_all_dishes_to_navigation_dish_details"
+            app:destination="@id/navigation_dish_details" />
     </fragment>
 
     <fragment
@@ -23,4 +26,10 @@
         android:name="weston.luke.favdish.view.fragments.RandomDishesFragment"
         android:label="@string/title_random_dish"
         tools:layout="@layout/fragment_random_dish" />
+
+    <fragment
+        android:id="@+id/navigation_dish_details"
+        android:name="weston.luke.favdish.view.fragments.DishDetailsFragment"
+        android:label="@string/title_dish_details"
+        tools:layout="@layout/fragment_dish_details"/>
 </navigation>

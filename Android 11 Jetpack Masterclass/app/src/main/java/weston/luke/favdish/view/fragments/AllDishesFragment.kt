@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import weston.luke.favdish.R
 import weston.luke.favdish.application.FavDishApplication
@@ -69,6 +70,10 @@ class AllDishesFragment : Fragment() {
                 }
         }
 
+    }
+
+    fun dishDetails(){
+        findNavController().navigate(AllDishesFragmentDirections.actionNavigationAllDishesToNavigationDishDetails())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
