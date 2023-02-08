@@ -1,5 +1,6 @@
 package weston.luke.favdish.view.fragments
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -29,7 +30,7 @@ class AllDishesFragment : Fragment() {
 
     private lateinit var mBinding: FragmentAllDishesBinding
 
-    private val mFavDishViewModel : FavDishViewModel by viewModels{
+    private val mFavDishViewModel: FavDishViewModel by viewModels {
         FavDishViewModelFactory((requireActivity().application as FavDishApplication).repository)
     }
 
@@ -57,38 +58,57 @@ class AllDishesFragment : Fragment() {
 
         mBinding.rvDishesList.adapter = favDishAdapter
 
-        mFavDishViewModel.allDishesList.observe(viewLifecycleOwner){
-            dishes ->
-                dishes.let{
-                    if(it.isNotEmpty()){
-                        mBinding.rvDishesList.visibility = View.VISIBLE
-                        mBinding.tvNoDishesAddedYet.visibility = View.GONE
-                        favDishAdapter.dishesList(it)
-                    }
-                    else{
-                        mBinding.rvDishesList.visibility = View.GONE
-                        mBinding.tvNoDishesAddedYet.visibility = View.VISIBLE
-                    }
+        mFavDishViewModel.allDishesList.observe(viewLifecycleOwner) { dishes ->
+            dishes.let {
+                if (it.isNotEmpty()) {
+                    mBinding.rvDishesList.visibility = View.VISIBLE
+                    mBinding.tvNoDishesAddedYet.visibility = View.GONE
+                    favDishAdapter.dishesList(it)
+                } else {
+                    mBinding.rvDishesList.visibility = View.GONE
+                    mBinding.tvNoDishesAddedYet.visibility = View.VISIBLE
                 }
+            }
         }
 
     }
 
-    fun dishDetails(favDish: FavDish){
+    fun dishDetails(favDish: FavDish) {
         //Pass the favDish as an argument to the new fragment
-        findNavController().navigate(AllDishesFragmentDirections.actionNavigationAllDishesToNavigationDishDetails(
-            favDish
-        ))
+        findNavController().navigate(
+            AllDishesFragmentDirections.actionNavigationAllDishesToNavigationDishDetails(
+                favDish
+            )
+        )
 //        Call method from outside the mainActivity from in the fragment
-        if(requireActivity() is MainActivity){
+        if (requireActivity() is MainActivity) {
             (activity as MainActivity?)?.hideBottomNavigationView()
         }
+    }
+
+    fun deleteDish(favDish: FavDish) {
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle(resources.getString(R.string.title_delete_dish))
+        builder.setMessage(resources.getString(R.string.msg_delete_dish_dialog, favDish.title))
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
+        builder.setPositiveButton(resources.getString(R.string.lbl_yes)) { dialogInterface, _ ->
+            mFavDishViewModel.delete(favDish)
+            dialogInterface.dismiss()
+        }
+        builder.setNegativeButton(resources.getString(R.string.lbl_no)) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+        }
+
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.setCancelable(false)
+        alertDialog.show()
+
     }
 
     override fun onResume() {
         super.onResume()
 
-        if(requireActivity() is MainActivity){
+        if (requireActivity() is MainActivity) {
             (activity as MainActivity?)?.showBottomNavigationView()
         }
     }
@@ -99,7 +119,7 @@ class AllDishesFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.action_add_dish -> {
                 startActivity(Intent(requireActivity(), AddUpdateDishActivity::class.java))
                 return true

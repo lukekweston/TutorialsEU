@@ -1,9 +1,6 @@
 package weston.luke.favdish.model.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import weston.luke.favdish.model.entities.FavDish
 
@@ -24,5 +21,8 @@ interface FavDishDao {
 
     @Query("SELECT * FROM FAV_DISHES_TABLE WHERE favourite_dish = 1")
     fun getAllFavoriteDishesList() : Flow<List<FavDish>>
+
+    @Delete
+    suspend fun deleteFavDishDetails(favDish: FavDish)
 
 }

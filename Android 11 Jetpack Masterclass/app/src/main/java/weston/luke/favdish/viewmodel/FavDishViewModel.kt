@@ -23,6 +23,11 @@ class FavDishViewModel(private val repository: FavDishRepository) :ViewModel() {
     }
 
     val allFavoriteDishes: LiveData<List<FavDish>> = repository.allFavoriteDishes.asLiveData()
+
+    @WorkerThread
+    fun delete(dish: FavDish) = viewModelScope.launch {
+        repository.deleteFavDishDetails(favDish = dish)
+    }
 }
 
 class FavDishViewModelFactory(private val repository: FavDishRepository) : ViewModelProvider.Factory{

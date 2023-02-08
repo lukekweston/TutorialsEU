@@ -59,7 +59,9 @@ class FavDishAdapter(private val fragment: Fragment) :
                     fragment.requireActivity().startActivity(intent)
 
                 } else if (it.itemId == R.id.action_delete_dish) {
-                    Log.i("you clicked", "delete dish")
+                    if (fragment is AllDishesFragment){
+                        fragment.deleteDish(dish)
+                    }
                 }
                 true
             }
