@@ -59,7 +59,9 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mCustomListDialog: Dialog
 
-    private val mFavDishViewModel : FavDishViewModel by viewModels {
+    private var mFavDishDetails: FavDish? = null
+
+    private val mFavDishViewModel: FavDishViewModel by viewModels {
         FavDishViewModelFactory((application as FavDishApplication).repository)
     }
 
@@ -67,20 +69,57 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         mBinding = ActivityAddUpdateDishBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+
+        if (intent.hasExtra(Constants.EXTRA_DISH_DETAILS)) {
+            mFavDishDetails = intent.getParcelableExtra(Constants.EXTRA_DISH_DETAILS)
+        }
         setUpActionBar()
+
+        //If editing a favorite dish, set all the favorite dish values onto the screen
+        mFavDishDetails?.let {
+            if (it.id != 0) {
+                mImagePath = it.image
+                Glide.with(this@AddUpdateDishActivity)
+                    .load(mImagePath)
+                    .centerCrop()
+                    .into(mBinding.ivDishImage)
+
+                mBinding.etTitle.setText(it.title)
+                mBinding.etType.setText(it.type)
+                mBinding.etCategory.setText(it.category)
+                mBinding.etIngredients.setText(it.ingredients)
+                mBinding.etCookingTime.setText(it.cookingTime)
+                mBinding.etDirections.setText(it.directionsToCook)
+
+                mBinding.btnAddDish.text = resources.getString(R.string.lbl_update_dish)
+            }
+        }
+
         //Sets the onclick listener to the onClickListener set up in this class
         mBinding.ivAddDishImage.setOnClickListener(this)
 
         mBinding.etType.setOnClickListener(this)
         mBinding.etCategory.setOnClickListener(this)
         mBinding.etCookingTime.setOnClickListener(this)
-        mBinding.btnAddDish.setOnClickListener(this )
+        mBinding.btnAddDish.setOnClickListener(this)
 
     }
 
 
     private fun setUpActionBar() {
         setSupportActionBar(mBinding.toolbarAddDishActivity)
+
+//        set title based on if editing or creating a dish
+        if (mFavDishDetails != null && mFavDishDetails!!.id != 0) {
+            supportActionBar?.let {
+                it.title = resources.getString(R.string.title_edit_dish)
+            }
+        } else {
+            supportActionBar?.let {
+                it.title = resources.getString(R.string.title_add_dish)
+            }
+        }
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         mBinding.toolbarAddDishActivity.setNavigationOnClickListener {
             onBackPressed()
@@ -119,14 +158,15 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                     return
                 }
                 R.id.btn_add_dish -> {
-                    val title = mBinding.etTitle.text.toString().trim {it <= ' '}
-                    val type = mBinding.etType.text.toString().trim {it <= ' '}
-                    val category = mBinding.etCategory.text.toString().trim {it <= ' '}
-                    val ingredients = mBinding.etIngredients.text.toString().trim {it <= ' '}
-                    val cookingTimeInMinutes = mBinding.etCookingTime.text.toString().trim {it <= ' '}
-                    val cookingDirection = mBinding.etDirections.text.toString().trim {it <= ' '}
+                    val title = mBinding.etTitle.text.toString().trim { it <= ' ' }
+                    val type = mBinding.etType.text.toString().trim { it <= ' ' }
+                    val category = mBinding.etCategory.text.toString().trim { it <= ' ' }
+                    val ingredients = mBinding.etIngredients.text.toString().trim { it <= ' ' }
+                    val cookingTimeInMinutes =
+                        mBinding.etCookingTime.text.toString().trim { it <= ' ' }
+                    val cookingDirection = mBinding.etDirections.text.toString().trim { it <= ' ' }
 
-                    when{
+                    when {
                         TextUtils.isEmpty(mImagePath) -> {
                             Toast.makeText(
                                 this@AddUpdateDishActivity,
@@ -177,27 +217,52 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                             ).show()
                         }
 //                        Else input data is good, ready to save dish
-                        else ->{
-                            val favDishDetails : FavDish = FavDish(
+                        else -> {
+                            var dishID = 0
+                            var imageSource = Constants.DISH_IMAGE_SOURCE_LOCAL
+                            var favouriteDish = false
+
+                            mFavDishDetails?.let {
+                                if (it.id != 0) {
+                                    dishID = it.id
+                                    imageSource = it.imageSource
+                                    favouriteDish = it.favouriteDish
+                                }
+                            }
+
+                            val favDishDetails: FavDish = FavDish(
                                 image = mImagePath,
-                                imageSource = Constants.DISH_IMAGE_SOURCE_LOCAL,
+                                imageSource = imageSource,
                                 title = title,
                                 type = type,
                                 category = category,
                                 ingredients = ingredients,
                                 cookingTime = cookingTimeInMinutes,
                                 directionsToCook = cookingDirection,
-                                favouriteDish = false
+                                favouriteDish = favouriteDish,
+                                id = dishID
                             )
 
-                            mFavDishViewModel.insert(favDishDetails)
-
-                            Toast.makeText(
-                                this@AddUpdateDishActivity,
-                                "You successfully added your favorite dish details.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            Log.e("Insertion", "Success")
+//                            Dish id will be 0 when creating a new dish
+                            if (dishID == 0) {
+                                mFavDishViewModel.insert(favDishDetails)
+                                Toast.makeText(
+                                    this@AddUpdateDishActivity,
+                                    "You successfully added your favorite dish details.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                Log.e("Insertion", "Success")
+                            }
+//                            Else update the existing favorite dish
+                            else {
+                                mFavDishViewModel.update(favDishDetails)
+                                Toast.makeText(
+                                    this@AddUpdateDishActivity,
+                                    "You successfully updated your favorite dish details.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                Log.e("Update", "Success")
+                            }
 //                            Finish to close the current activity after inserting
                             finish()
                         }
@@ -402,9 +467,9 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         return file.absolutePath
     }
 
-    fun selectedListItem(item: String, selection: String){
-        when(selection){
-            Constants.DISH_TYPE ->{
+    fun selectedListItem(item: String, selection: String) {
+        when (selection) {
+            Constants.DISH_TYPE -> {
                 mCustomListDialog.dismiss()
                 mBinding.etType.setText(item)
             }

@@ -1,5 +1,6 @@
 package weston.luke.favdish.view.adapters
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,8 @@ import com.bumptech.glide.Glide
 import weston.luke.favdish.R
 import weston.luke.favdish.databinding.ItemDishLayoutBinding
 import weston.luke.favdish.model.entities.FavDish
+import weston.luke.favdish.util.Constants
+import weston.luke.favdish.view.activities.AddUpdateDishActivity
 import weston.luke.favdish.view.fragments.AllDishesFragment
 import weston.luke.favdish.view.fragments.FavoriteDishesFragment
 
@@ -50,7 +53,11 @@ class FavDishAdapter(private val fragment: Fragment) :
             popupMenu.menuInflater.inflate(R.menu.menu_adapter, popupMenu.menu)
             popupMenu.setOnMenuItemClickListener {
                 if (it.itemId == R.id.action_edit_dish) {
-                    Log.i("you clicked", "edit dish")
+                    val intent =
+                        Intent(fragment.requireActivity(), AddUpdateDishActivity::class.java)
+                    intent.putExtra(Constants.EXTRA_DISH_DETAILS, dish)
+                    fragment.requireActivity().startActivity(intent)
+
                 } else if (it.itemId == R.id.action_delete_dish) {
                     Log.i("you clicked", "delete dish")
                 }
@@ -62,8 +69,7 @@ class FavDishAdapter(private val fragment: Fragment) :
 // only show menu on all dishes fragment
         if (fragment is AllDishesFragment) {
             holder.ibMore.visibility = View.VISIBLE
-        }
-        else if(fragment is FavoriteDishesFragment){
+        } else if (fragment is FavoriteDishesFragment) {
             holder.ibMore.visibility = View.GONE
         }
     }
