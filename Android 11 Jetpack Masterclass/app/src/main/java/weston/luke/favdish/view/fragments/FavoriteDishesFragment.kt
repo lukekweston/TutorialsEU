@@ -9,9 +9,12 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import weston.luke.favdish.application.FavDishApplication
 import weston.luke.favdish.databinding.FragmentFavouriteDishesBinding
+import weston.luke.favdish.model.entities.FavDish
+import weston.luke.favdish.view.activities.MainActivity
 import weston.luke.favdish.view.adapters.FavDishAdapter
 import weston.luke.favdish.viewmodel.DashboardViewModel
 import weston.luke.favdish.viewmodel.FavDishViewModel
@@ -66,6 +69,19 @@ class FavoriteDishesFragment : Fragment() {
                     mBinding!!.tvNoFavoriteDishesAvailable.visibility = View.VISIBLE
                 }
             }
+        }
+    }
+
+    fun dishDetails(favDish: FavDish) {
+        //Pass the favDish as an argument to the new fragment
+        findNavController().navigate(
+            FavoriteDishesFragmentDirections.actionNavigationFavouriteDishesToNavigationDishDetails(
+                favDish
+            )
+        )
+//        Call method from outside the mainActivity from in the fragment
+        if (requireActivity() is MainActivity) {
+            (activity as MainActivity?)?.hideBottomNavigationView()
         }
     }
 
