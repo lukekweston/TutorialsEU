@@ -3,6 +3,7 @@ package weston.luke.favdish.model.database
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import weston.luke.favdish.model.entities.FavDish
 
@@ -17,5 +18,8 @@ interface FavDishDao {
 
     @Query("SELECT * FROM FAV_DISHES_TABLE ORDER BY ID")
     fun getAllDishesList() : Flow<List<FavDish>>
+
+    @Update
+    suspend fun updateFavDishDetails(favDish: FavDish)
 
 }
