@@ -21,6 +21,8 @@ class FavDishViewModel(private val repository: FavDishRepository) :ViewModel() {
     fun update(dish: FavDish) = viewModelScope.launch {
         repository.updateFavDishData(favDish = dish)
     }
+
+    val allFavoriteDishes: LiveData<List<FavDish>> = repository.allFavoriteDishes.asLiveData()
 }
 
 class FavDishViewModelFactory(private val repository: FavDishRepository) : ViewModelProvider.Factory{
