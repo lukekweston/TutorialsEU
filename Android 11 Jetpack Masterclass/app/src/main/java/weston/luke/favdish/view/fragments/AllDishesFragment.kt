@@ -166,7 +166,6 @@ class AllDishesFragment : Fragment() {
     fun filterSelection(filterItemSelection: String){
         mCustomListDialog.dismiss()
 
-        Log.i("sds", filterItemSelection)
 
         if(filterItemSelection == Constants.ALL_ITEMS){
             mFavDishViewModel.allDishesList.observe(viewLifecycleOwner) { dishes ->
@@ -182,7 +181,18 @@ class AllDishesFragment : Fragment() {
                 }
             }
         }else{
-            Log.i("Filer list", "get Filter list")
+            mFavDishViewModel.getFilteredDishes(filterItemSelection).observe(viewLifecycleOwner) { dishes ->
+                dishes.let {
+                    if (it.isNotEmpty()) {
+                        mBinding.rvDishesList.visibility = View.VISIBLE
+                        mBinding.tvNoDishesAddedYet.visibility = View.GONE
+                        mFavDishAdapter.dishesList(it)
+                    } else {
+                        mBinding.rvDishesList.visibility = View.GONE
+                        mBinding.tvNoDishesAddedYet.visibility = View.VISIBLE
+                    }
+                }
+            }
         }
 
 

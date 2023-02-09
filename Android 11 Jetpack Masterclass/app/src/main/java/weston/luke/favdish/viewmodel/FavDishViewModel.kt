@@ -28,6 +28,8 @@ class FavDishViewModel(private val repository: FavDishRepository) :ViewModel() {
     fun delete(dish: FavDish) = viewModelScope.launch {
         repository.deleteFavDishDetails(favDish = dish)
     }
+
+    fun getFilteredDishes(value: String): LiveData<List<FavDish>> = repository.getFilteredDishesList(value).asLiveData()
 }
 
 class FavDishViewModelFactory(private val repository: FavDishRepository) : ViewModelProvider.Factory{
