@@ -1,7 +1,9 @@
 package weston.luke.favdish.view.fragments
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -12,12 +14,16 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import weston.luke.favdish.R
 import weston.luke.favdish.application.FavDishApplication
+import weston.luke.favdish.databinding.DialogCustomListBinding
 import weston.luke.favdish.databinding.FragmentAllDishesBinding
 import weston.luke.favdish.model.entities.FavDish
+import weston.luke.favdish.util.Constants
 import weston.luke.favdish.view.activities.AddUpdateDishActivity
 import weston.luke.favdish.view.activities.MainActivity
+import weston.luke.favdish.view.adapters.CustomListItemAdapter
 import weston.luke.favdish.view.adapters.FavDishAdapter
 import weston.luke.favdish.viewmodel.FavDishViewModel
 import weston.luke.favdish.viewmodel.FavDishViewModelFactory
@@ -105,6 +111,24 @@ class AllDishesFragment : Fragment() {
 
     }
 
+    private fun filterDishesListDialog(){
+        val customListDialog = Dialog(requireActivity())
+        val binding: DialogCustomListBinding = DialogCustomListBinding.inflate(layoutInflater)
+
+        customListDialog.setContentView(binding.root)
+        binding.tvTitle.text = resources.getString(R.string.title_select_item_to_filter)
+        val dishTypes = Constants.dishTypes()
+        dishTypes.add(0, Constants.ALL_ITEMS)
+        binding.rvList.layoutManager = LinearLayoutManager(requireActivity())
+
+        val adapter = CustomListItemAdapter(requireActivity(), dishTypes, Constants.FILTER_SELECTION)
+
+        binding.rvList.adapter = adapter
+        customListDialog.show()
+
+
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -122,6 +146,10 @@ class AllDishesFragment : Fragment() {
         when (item.itemId) {
             R.id.action_add_dish -> {
                 startActivity(Intent(requireActivity(), AddUpdateDishActivity::class.java))
+                return true
+            }
+            R.id.action_fliter_dishes -> {
+                filterDishesListDialog()
                 return true
             }
         }
