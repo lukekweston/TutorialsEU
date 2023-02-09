@@ -3,12 +3,15 @@ package weston.luke.favdish.view.adapters
 import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import weston.luke.favdish.databinding.ItemCustomListBinding
 import weston.luke.favdish.view.activities.AddUpdateDishActivity
+import weston.luke.favdish.view.fragments.AllDishesFragment
 
 class CustomListItemAdapter(
     private val activity: Activity,
+    private val fragment: Fragment?,
     private val listItems: List<String>,
     private val selection: String
 ) : RecyclerView.Adapter<CustomListItemAdapter.ViewHolder>(){
@@ -27,6 +30,9 @@ class CustomListItemAdapter(
         holder.itemView.setOnClickListener{
             if(activity is AddUpdateDishActivity){
                 activity.selectedListItem(item, selection)
+            }
+            if(fragment is AllDishesFragment){
+                fragment.filterSelection(item)
             }
         }
     }
