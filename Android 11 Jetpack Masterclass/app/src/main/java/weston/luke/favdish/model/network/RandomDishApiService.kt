@@ -15,7 +15,7 @@ class RandomDishApiService {
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .build()
-        .create(RandomDishAPI::class.java)
+        .create(RandomDishApi::class.java)
 
     fun getRandomDish(): Single<RandomDish.Recipes> {
         return api.getRandomDishes(

@@ -6,7 +6,7 @@ import retrofit2.http.Query
 import weston.luke.favdish.model.entities.RandomDish
 import weston.luke.favdish.util.Constants
 
-interface RandomDishAPI {
+interface RandomDishApi {
 
     @GET(Constants.API_ENDPOINT_RANDOM_DISH)
     fun getRandomDishes(
