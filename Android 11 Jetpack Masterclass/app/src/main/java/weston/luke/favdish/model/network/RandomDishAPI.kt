@@ -8,8 +8,8 @@ import weston.luke.favdish.util.Constants
 
 interface RandomDishAPI {
 
-    @GET(Constants.API_ENDPOINT)
-    fun getDishes(
+    @GET(Constants.API_ENDPOINT_RANDOM_DISH)
+    fun getRandomDishes(
         @Query(Constants.API_KEY) apiKey: String,
         @Query(Constants.LIMIT_LICENSE) limitLicense: Boolean,
         @Query(Constants.TAGS) tags: String,
