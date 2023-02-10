@@ -12,32 +12,21 @@ import weston.luke.favdish.viewmodel.NotificationsViewModel
 
 class RandomDishesFragment : Fragment() {
 
-    private var _binding: FragmentRandomDishBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private var mBinding: FragmentRandomDishBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(NotificationsViewModel::class.java)
 
-        _binding = FragmentRandomDishBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        mBinding = FragmentRandomDishBinding.inflate(inflater, container, false)
 
-        val textView: TextView = binding.textNotifications
-        notificationsViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-        return root
+        return mBinding!!.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        mBinding = null
     }
 }
