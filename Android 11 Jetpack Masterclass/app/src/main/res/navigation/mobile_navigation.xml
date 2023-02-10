@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/navigation_random_dish"
-        android:name="weston.luke.favdish.view.fragments.RandomDishesFragment"
+        android:name="weston.luke.favdish.view.fragments.RandomDishFragment"
         android:label="@string/title_random_dish"
         tools:layout="@layout/fragment_random_dish" />
 
