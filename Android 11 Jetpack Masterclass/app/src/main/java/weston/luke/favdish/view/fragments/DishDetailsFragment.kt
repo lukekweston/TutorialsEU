@@ -176,7 +176,7 @@ class DishDetailsFragment : Fragment() {
                 @Suppress("DEPRECATION")
                 mBinding!!.tvCookingDirection.text  = Html.fromHtml(it.dishDetails.directionsToCook).toString()
             }
-            
+
 
             mBinding!!.tvCookingTime.text =
                 resources.getString(R.string.lbl_estimate_cooking_time, it.dishDetails.cookingTime)
