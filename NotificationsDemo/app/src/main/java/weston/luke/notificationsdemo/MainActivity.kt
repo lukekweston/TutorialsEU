@@ -25,6 +25,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         val btnInboxStyleNotification = findViewById<Button>(R.id.btn_inbox_style)
         btnInboxStyleNotification.setOnClickListener(this@MainActivity)
+
+        val btnBigImageStyleNotification = findViewById<Button>(R.id.btn_big_image_style)
+        btnBigImageStyleNotification.setOnClickListener(this@MainActivity)
     }
 
     override fun onClick(view: View) {
@@ -33,8 +36,69 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 generateInboxStyleNotification()
                 return
             }
+            R.id.btn_big_image_style ->{
+                generateBigPictureNotification()
+                return
+            }
         }
 
+
+    }
+
+    private fun generateBigPictureNotification(){
+        val notificationChannelId: String = NotificationUtil().createBigPictureStyleNotification(this)
+
+        val bigPictureStyle = NotificationCompat.BigPictureStyle()
+            .bigPicture(
+                BitmapFactory.decodeResource(resources, BigPictureStyleMockData.mBigImage)
+            )
+            .setBigContentTitle(BigPictureStyleMockData.mBigContentTitle)
+            .setSummaryText(BigPictureStyleMockData.mSummaryText)
+
+        val mainIntent  = Intent(this, MainActivity::class.java)
+
+        val mainPendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            mainIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val notificationCompatBuilder = NotificationCompat.Builder(
+            applicationContext, notificationChannelId
+        )
+
+        notificationCompatBuilder
+            .setStyle(bigPictureStyle)
+            .setContentTitle(BigPictureStyleMockData.mContentTitle)
+            .setContentText(BigPictureStyleMockData.mContentText)
+            .setSmallIcon(R.drawable.ic_baseline_flight_24)
+            .setLargeIcon(
+                BitmapFactory.decodeResource(
+                    resources,
+                    R.drawable.ic_baseline_directions_bike_24
+                )
+            )
+            .setContentIntent(mainPendingIntent)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setColor(
+                ContextCompat.getColor(
+                    applicationContext, R.color.teal_200
+                )
+            )
+            .setSubText(1.toString())
+            .setCategory(Notification.CATEGORY_SOCIAL)
+            .setPriority(BigPictureStyleMockData.mPriority)
+            .setVisibility(BigPictureStyleMockData.mChannelLockScreenVisibility)
+
+        for(name in BigPictureStyleMockData.mParticipants()){
+            notificationCompatBuilder.addPerson(name)
+        }
+
+        val notification = notificationCompatBuilder.build()
+
+        //Run the notification
+        mNotificationManagerCompat.notify(NOTIFICATION_ID, notification)
 
     }
 
