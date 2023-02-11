@@ -1,6 +1,7 @@
 package weston.luke.favdish.view.activities
 
 import android.os.Bundle
+import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -44,11 +45,16 @@ class MainActivity : AppCompatActivity() {
         mBinding.navView.clearAnimation()
 //        Animate the navView down by its own height for 300 ms
         mBinding.navView.animate().translationY(mBinding.navView.height.toFloat()).duration = 300
+
+        mBinding.navView.visibility = View.GONE
     }
 
     fun showBottomNavigationView(){
         mBinding.navView.clearAnimation()
+        mBinding.navView.visibility = View.VISIBLE
 //        Put the navView back to its origin over 300ms
         mBinding.navView.animate().translationY(0f).duration = 300
+
+
     }
 }
