@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import weston.luke.dogprofilepage.ui.theme.DogProfilePageTheme
+import weston.luke.dogprofilepage.ui.theme.ProfilePageConstraintLayout
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +25,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    ProfilePage()
+                    ProfilePageConstraintLayout()
                 }
             }
         }
