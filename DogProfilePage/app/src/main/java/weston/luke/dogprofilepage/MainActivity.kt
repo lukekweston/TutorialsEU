@@ -10,6 +10,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import weston.luke.dogprofilepage.ui.theme.DogProfilePageTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,6 +32,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+fun myApp() {
+    Text(
+        text = " Welcome to this video!",
+        fontSize = 30.sp
+    )
+}
+
+@Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
@@ -37,7 +47,5 @@ fun Greeting(name: String) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    DogProfilePageTheme {
-        Greeting("Android")
-    }
+    myApp()
 }
