@@ -24,28 +24,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Luke")
+                    ProfilePage()
                 }
             }
         }
     }
-}
-
-@Composable
-fun myApp() {
-    Text(
-        text = " Welcome to this video!",
-        fontSize = 30.sp
-    )
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    myApp()
 }
