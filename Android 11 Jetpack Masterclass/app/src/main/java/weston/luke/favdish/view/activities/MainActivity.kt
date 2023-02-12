@@ -14,6 +14,7 @@ import androidx.work.*
 import weston.luke.favdish.R
 import weston.luke.favdish.databinding.ActivityMainBinding
 import weston.luke.favdish.model.notification.NotifyWorker
+import weston.luke.favdish.util.Constants
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -39,6 +40,11 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(mNavController, appBarConfiguration)
         mBinding.navView.setupWithNavController(mNavController)
+
+        if(intent.hasExtra(Constants.NOTIFICATION_ID)){
+            val notificationId = intent.getIntExtra(Constants.NOTIFICATION_ID, 0)
+            mBinding.navView.selectedItemId = R.id.navigation_random_dish
+        }
 
         startWork()
     }
