@@ -102,8 +102,6 @@ sealed class DrawerMenuData(
 
     object HeaderTwo: DrawerMenuData(
         isHeader = true,
-        title = "GOOGLE APPS""
+        title = "GOOGLE APPS"
     )
-
-
 }
