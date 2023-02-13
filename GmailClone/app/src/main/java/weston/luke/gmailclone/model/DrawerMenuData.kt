@@ -1,6 +1,5 @@
-package weston.luke.gmailclone
+package weston.luke.gmailclone.model
 
-import android.icu.text.CaseMap
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.ui.graphics.vector.ImageVector
