@@ -67,6 +67,10 @@ object MockData {
         )
     )
 
+    fun getNews(newsId: Int?): NewsData {
+        return topNewsList.first { it.id == newsId }
+    }
+
     val techNewsList = listOf<NewsData>()
     val sportsNewsList = listOf<NewsData>()
     val businessNewsList = listOf<NewsData>()

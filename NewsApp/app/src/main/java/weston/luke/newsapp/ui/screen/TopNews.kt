@@ -1,6 +1,7 @@
 package weston.luke.newsapp.ui.screen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -28,7 +29,9 @@ fun TopNews(navController: NavController) {
         Text(text = "Top News", fontWeight = FontWeight.SemiBold)
         LazyColumn {
             items(MockData.topNewsList) { newsData ->
-                TopNewsItem(newsData = newsData)
+                TopNewsItem(newsData = newsData, onNewsClick = {
+                    navController.navigate("DetailScreen/${newsData.id}")
+                })
             }
         }
     }
@@ -36,11 +39,12 @@ fun TopNews(navController: NavController) {
 
 
 @Composable
-fun TopNewsItem(newsData: NewsData) {
+fun TopNewsItem(newsData: NewsData, onNewsClick: () -> Unit = {}) {
     Box(
         modifier = Modifier
             .height(200.dp)
             .padding(8.dp)
+            .clickable { onNewsClick() }
     ) {
         Image(
             painter = painterResource(id = newsData.image),
@@ -63,6 +67,6 @@ fun TopNewsItem(newsData: NewsData) {
 @Preview(showBackground = true)
 @Composable
 fun TopNewsPreview() {
-//    TopNews(navController = rememberNavController())
-    TopNewsItem(MockData.topNewsList[4])
+    TopNews(navController = rememberNavController())
+//    TopNewsItem(MockData.topNewsList[4])
 }

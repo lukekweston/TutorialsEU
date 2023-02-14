@@ -11,10 +11,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import weston.luke.newsapp.ui.MockData
+import weston.luke.newsapp.ui.NewsData
 
 
 @Composable
-fun DetailScreen(navController: NavController) {
+fun DetailScreen(navController: NavController, newsData: NewsData) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -24,7 +26,7 @@ fun DetailScreen(navController: NavController) {
 //            navController.navigate("TopNews")
             navController.popBackStack()
         }) {
-            Text(text = "Go to News screen")
+            Text(text = "Go to News screen + ${newsData.author}")
         }
     }
 }
@@ -32,5 +34,5 @@ fun DetailScreen(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun DetailScreenPreview() {
-    DetailScreen(rememberNavController())
+    DetailScreen(rememberNavController(), MockData.topNewsList[4])
 }
