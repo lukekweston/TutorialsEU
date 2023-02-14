@@ -12,10 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import weston.luke.gmailclone.components.GmailDrawerMenu
-import weston.luke.gmailclone.components.HomeAppBar
-import weston.luke.gmailclone.components.HomeBottomMenu
-import weston.luke.gmailclone.components.MailList
+import weston.luke.gmailclone.components.*
 import weston.luke.gmailclone.model.DrawerMenuData
 import weston.luke.gmailclone.ui.theme.GmailCloneTheme
 
@@ -42,6 +39,7 @@ fun GmailApp() {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
+    //val scrollStateMailList = rememberScrollState()
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -51,9 +49,13 @@ fun GmailApp() {
         },
         bottomBar = {
             HomeBottomMenu()
+        },
+        floatingActionButton = {
+            GmailFab(scrollState)
         }
     ) {
-        MailList(paddingValues = it)
+        MailList(paddingValues = it, scrollState)
+
     }
 
 }
