@@ -1,38 +1,71 @@
 package weston.luke.newsapp.ui.screen
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import weston.luke.newsapp.ui.MockData
 import weston.luke.newsapp.ui.NewsData
+import weston.luke.newsapp.R
 
 
 @Composable
-fun DetailScreen(navController: NavController, newsData: NewsData) {
+fun DetailScreen(newsData: NewsData, scrollState: ScrollState) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxWidth().verticalScroll(scrollState).padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(text = "Detail Screen", fontWeight = FontWeight.SemiBold)
-        Button(onClick = {
-//            navController.navigate("TopNews")
-            navController.popBackStack()
-        }) {
-            Text(text = "Go to News screen + ${newsData.author}")
+        Image(painter = painterResource(newsData.image), contentDescription = "")
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconWithInfo(icon = Icons.Default.Edit, info = newsData.author)
+            IconWithInfo(icon = Icons.Default.DateRange, info = newsData.publishedAt)
+
         }
+        Text(text = newsData.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text(text = newsData.description, modifier = Modifier.padding(top=16.dp))
+
+
     }
 }
+
+//Make these as a seperate composable so that the spacing will be between the two IconWithInfo, not
+// between all the items
+@Composable
+fun IconWithInfo(icon: ImageVector, info: String){
+    Row{
+        Icon(icon, contentDescription = "Author", modifier = Modifier.padding(end =8.dp),
+        tint = colorResource(id = R.color.purple_500))
+        Text(text=info)
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
 fun DetailScreenPreview() {
-    DetailScreen(rememberNavController(), MockData.topNewsList[4])
+    DetailScreen( MockData.topNewsList[4], rememberScrollState())
 }

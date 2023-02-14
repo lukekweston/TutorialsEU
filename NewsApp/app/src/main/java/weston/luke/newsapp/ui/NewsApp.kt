@@ -1,5 +1,6 @@
 package weston.luke.newsapp.ui
 
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.Navigation
@@ -18,6 +19,7 @@ fun NewsApp() {
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
+    val scrollState = rememberScrollState()
     NavHost(navController = navController, startDestination = "TopNews") {
         composable("TopNews") {
             TopNews(navController = navController)
@@ -33,8 +35,8 @@ fun Navigation() {
             //2) Navigate to detail screen passing in the newsData, this is retrieved from MockData.getNews() using the
             //Id passed into the path - we get this with navBackStackEntry.arguments?.getInt("newsId")
             DetailScreen(
-                navController = navController,
-                newsData = MockData.getNews(newsId = navBackStackEntry.arguments?.getInt("newsId"))
+                newsData = MockData.getNews(newsId = navBackStackEntry.arguments?.getInt("newsId")),
+                scrollState = scrollState
             )
         }
     }
