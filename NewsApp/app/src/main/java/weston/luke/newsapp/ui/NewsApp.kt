@@ -36,7 +36,8 @@ fun Navigation() {
             //Id passed into the path - we get this with navBackStackEntry.arguments?.getInt("newsId")
             DetailScreen(
                 newsData = MockData.getNews(newsId = navBackStackEntry.arguments?.getInt("newsId")),
-                scrollState = scrollState
+                scrollState = scrollState,
+                navController = navController
             )
         }
     }

@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import weston.luke.newsapp.ui.MockData
+import weston.luke.newsapp.ui.MockData.getTimeAgo
 import weston.luke.newsapp.ui.NewsData
 
 
@@ -54,10 +55,10 @@ fun TopNewsItem(newsData: NewsData, onNewsClick: () -> Unit = {}) {
         Column(
             modifier = Modifier
                 .wrapContentHeight()
-                .padding(16.dp),
+                .padding(8.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = newsData.publishedAt, color = Color.White, fontWeight = FontWeight.SemiBold)
+            Text(text = MockData.stringToDate(newsData.publishedAt).getTimeAgo(), color = Color.White, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(80.dp))
             Text(text = newsData.title, color = Color.White, fontWeight = FontWeight.SemiBold)
         }
