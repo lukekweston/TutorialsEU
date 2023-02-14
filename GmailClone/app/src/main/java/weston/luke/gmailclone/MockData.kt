@@ -1,5 +1,8 @@
 package weston.luke.gmailclone
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Backpack
+import weston.luke.gmailclone.model.Account
 import weston.luke.gmailclone.model.MailData
 
 val mailList = listOf(
@@ -87,4 +90,11 @@ val mailList = listOf(
         body = "Your performance review is due next week, please schedule a meeting with HR",
         timeStamp = "20:00"
     )
+)
+
+val accountList = listOf<Account>(
+    Account(icon = R.drawable.holly, username = "Holly Dog", "holly@gmail.com", 999),
+    Account( null, username = "Luke Weston", "Luke@gmail.com", 34),
+    Account( null, username = "Christie", "chris@gmail.com", 80),
+    Account( null, username = "Rocky", "chris@gmail.com", 999),
 )
