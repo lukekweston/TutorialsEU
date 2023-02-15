@@ -1,9 +1,5 @@
 package weston.luke.newsapp.ui.screen
 
-import android.icu.text.CaseMap
-import android.icu.text.SimpleDateFormat
-import android.os.Build
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
@@ -26,11 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import weston.luke.newsapp.ui.MockData
-import weston.luke.newsapp.ui.NewsData
+import weston.luke.newsapp.MockData
+import weston.luke.newsapp.NewsData
 import weston.luke.newsapp.R
-import weston.luke.newsapp.ui.MockData.getTimeAgo
-import java.util.*
+import weston.luke.newsapp.MockData.getTimeAgo
 
 
 @Composable

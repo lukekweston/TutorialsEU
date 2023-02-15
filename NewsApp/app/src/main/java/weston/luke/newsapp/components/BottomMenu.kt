@@ -1,4 +1,4 @@
-package weston.luke.newsapp.ui.components
+package weston.luke.newsapp.components
 
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import weston.luke.newsapp.BottomMenuScreen
 
 @Composable
 fun BottomMenu(navController: NavController) {

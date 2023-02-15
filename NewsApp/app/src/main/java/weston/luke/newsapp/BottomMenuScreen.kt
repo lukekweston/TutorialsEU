@@ -1,4 +1,4 @@
-package weston.luke.newsapp.ui.components
+package weston.luke.newsapp
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Category

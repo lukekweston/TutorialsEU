@@ -8,8 +8,9 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import weston.luke.newsapp.ui.components.BottomMenu
-import weston.luke.newsapp.ui.components.BottomMenuScreen
+import weston.luke.newsapp.MockData
+import weston.luke.newsapp.components.BottomMenu
+import weston.luke.newsapp.BottomMenuScreen
 import weston.luke.newsapp.ui.screen.Categories
 import weston.luke.newsapp.ui.screen.DetailScreen
 import weston.luke.newsapp.ui.screen.Sources

@@ -1,9 +1,8 @@
-package weston.luke.newsapp.ui
+package weston.luke.newsapp
 
 import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.util.Log
-import weston.luke.newsapp.R
 import java.util.*
 
 object MockData {
