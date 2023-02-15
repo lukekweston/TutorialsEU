@@ -1,10 +1,8 @@
 package weston.luke.newsapp.ui.screen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,16 +11,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.skydoves.landscapist.coil.CoilImage
-import weston.luke.newsapp.MockData
-import weston.luke.newsapp.MockData.getTimeAgo
-import weston.luke.newsapp.NewsData
+import weston.luke.newsapp.data.MockData
+import weston.luke.newsapp.data.MockData.getTimeAgo
 import weston.luke.newsapp.models.TopNewsArticle
 import weston.luke.newsapp.R
 

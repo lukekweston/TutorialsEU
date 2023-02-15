@@ -1,4 +1,4 @@
-package weston.luke.newsapp
+package weston.luke.newsapp.data
 
 import weston.luke.newsapp.R
 

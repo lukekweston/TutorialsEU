@@ -1,6 +1,5 @@
 package weston.luke.newsapp.ui.screen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -18,7 +17,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,10 +24,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.skydoves.landscapist.coil.CoilImage
-import weston.luke.newsapp.MockData
-import weston.luke.newsapp.NewsData
+import weston.luke.newsapp.data.MockData
 import weston.luke.newsapp.R
-import weston.luke.newsapp.MockData.getTimeAgo
+import weston.luke.newsapp.data.MockData.getTimeAgo
 import weston.luke.newsapp.models.TopNewsArticle
 
 

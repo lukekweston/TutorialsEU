@@ -12,7 +12,6 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import weston.luke.newsapp.MockData
 import weston.luke.newsapp.components.BottomMenu
 import weston.luke.newsapp.BottomMenuScreen
 import weston.luke.newsapp.models.TopNewsArticle
@@ -57,7 +56,7 @@ fun Navigation(
             startDestination = BottomMenuScreen.TopNews.route,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
-            bottomNavigation(navController = navController, articles)
+            bottomNavigation(navController = navController, articles, newsManager)
 
             composable(
                 "DetailScreen/{index}",
@@ -78,12 +77,12 @@ fun Navigation(
     }
 }
 
-fun NavGraphBuilder.bottomNavigation(navController: NavController, articles: List<TopNewsArticle>) {
+fun NavGraphBuilder.bottomNavigation(navController: NavController, articles: List<TopNewsArticle>, newsManager: NewsManager) {
     composable(BottomMenuScreen.TopNews.route) {
         TopNews(navController = navController, articles = articles)
     }
     composable(BottomMenuScreen.Categories.route) {
-        Categories()
+        Categories(newsManager = newsManager, onFetchCategory = {newsManager.onSelectedCategoryChanged(it)})
     }
     composable(BottomMenuScreen.Sources.route) {
         Sources()

@@ -1,13 +1,13 @@
 package weston.luke.newsapp.network
 
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import weston.luke.newsapp.data.ArticleCategory
+import weston.luke.newsapp.data.getAllArticleCategory
+import weston.luke.newsapp.data.getArticleCategory
 import weston.luke.newsapp.models.TopNewsResponse
 import weston.luke.newsapp.util.Constants
 
@@ -19,7 +19,7 @@ class NewsManager {
         @Composable get() = remember {
             _newsResponse
         }
-
+    val selectedCategory: MutableState<ArticleCategory?> = mutableStateOf(null)
     init {
         getArticles()
     }
@@ -43,5 +43,11 @@ class NewsManager {
                 Log.d("error", "${t.printStackTrace()}")
             }
         })
+    }
+
+    //Update the currently selected Category to be the category passed in
+    fun onSelectedCategoryChanged(category: String){
+        val newCategory = getArticleCategory(category = category)
+        selectedCategory.value = newCategory
     }
 }
