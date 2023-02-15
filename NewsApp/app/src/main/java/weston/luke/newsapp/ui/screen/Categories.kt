@@ -1,9 +1,12 @@
 package weston.luke.newsapp.ui.screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -11,9 +14,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.skydoves.landscapist.coil.CoilImage
 import weston.luke.newsapp.R
+import weston.luke.newsapp.data.MockData
+import weston.luke.newsapp.data.MockData.getTimeAgo
 import weston.luke.newsapp.data.getAllArticleCategory
+import weston.luke.newsapp.models.TopNewsArticle
 import weston.luke.newsapp.network.NewsManager
 
 
@@ -52,4 +63,64 @@ fun CategoryTab(category: String, isSelected: Boolean = false, onFetchCategory: 
             modifier = Modifier.padding(8.dp)
         )
     }
+}
+
+
+@Composable
+fun ArticleContent(articles: List<TopNewsArticle>, modifier: Modifier = Modifier) {
+    LazyColumn {
+        items(articles) { article ->
+            Card(
+                modifier = modifier.padding(8.dp), border = BorderStroke(
+                    2.dp, color = colorResource(
+                        id = R.color.purple_500
+                    )
+                )
+            ) {
+                Row(
+                    modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    CoilImage(
+                        imageModel = article.urlToImage,
+                        modifier = Modifier.size(100.dp),
+                        placeHolder = painterResource(
+                            id = R.drawable.breaking_news
+                        )
+                    )
+                    Column(modifier = modifier.padding(8.dp)) {
+                        Text(
+                            text = article.title ?: "Not available",
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Row(
+                            modifier = modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = article.author ?: "Not available")
+                            Text(
+                                text = MockData.stringToDate(
+                                    article.publishedAt ?: "2021-11-10T14:25:20Z"
+                                ).getTimeAgo()
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ArticleContentPreview(){
+    ArticleContent(articles = listOf(
+        TopNewsArticle(author = "Thomas Barrabi",
+            title = "Sen. Murkowski slams Dems over 'show votes' on federal election bills - Fox News",
+            description = "Sen. Lisa Murkowski, R-Alaska, slammed Senate Democrats for pursuing “show votes” on federal election bills on Wednesday as Republicans used the filibuster to block consideration the John Lewis Voting Rights Advancement Act.",
+            publishedAt = "2021-11-04T01:57:36Z")
+    ))
 }
