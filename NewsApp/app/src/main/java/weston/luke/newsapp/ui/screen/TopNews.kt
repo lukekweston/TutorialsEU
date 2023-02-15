@@ -10,27 +10,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.skydoves.landscapist.coil.CoilImage
 import weston.luke.newsapp.MockData
 import weston.luke.newsapp.MockData.getTimeAgo
 import weston.luke.newsapp.NewsData
+import weston.luke.newsapp.models.TopNewsArticle
+import weston.luke.newsapp.R
 
 
 @Composable
-fun TopNews(navController: NavController) {
+fun TopNews(navController: NavController, articles: List<TopNewsArticle>) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Top News", fontWeight = FontWeight.SemiBold)
         LazyColumn {
-            items(MockData.topNewsList) { newsData ->
-                TopNewsItem(newsData = newsData, onNewsClick = {
-                    navController.navigate("DetailScreen/${newsData.id}")
-                })
+            items(articles.size) { index ->
+                TopNewsItem(article = articles[index],
+                    onNewsClick = { navController.navigate("DetailScreen/$index")
+                    })
             }
         }
     }
@@ -38,27 +43,34 @@ fun TopNews(navController: NavController) {
 
 
 @Composable
-fun TopNewsItem(newsData: NewsData, onNewsClick: () -> Unit = {}) {
+fun TopNewsItem(article: TopNewsArticle, onNewsClick: () -> Unit = {}) {
     Box(
         modifier = Modifier
             .height(200.dp)
             .padding(8.dp)
             .clickable { onNewsClick() }
     ) {
-        Image(
-            painter = painterResource(id = newsData.image),
-            contentDescription = "",
-            contentScale = ContentScale.FillBounds
+
+        CoilImage(
+            imageModel = article.urlToImage,
+            contentScale = ContentScale.Crop,
+            error = ImageBitmap.imageResource(id = R.drawable.breaking_news),
+            placeHolder = ImageBitmap.imageResource(id = R.drawable.breaking_news)
         )
+
         Column(
             modifier = Modifier
                 .wrapContentHeight()
                 .padding(8.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = MockData.stringToDate(newsData.publishedAt).getTimeAgo(), color = Color.White, fontWeight = FontWeight.SemiBold)
+            Text(
+                text = MockData.stringToDate(article.publishedAt!!).getTimeAgo(),
+                color = Color.White,
+                fontWeight = FontWeight.SemiBold
+            )
             Spacer(modifier = Modifier.height(80.dp))
-            Text(text = newsData.title, color = Color.White, fontWeight = FontWeight.SemiBold)
+            Text(text = article.title!!, color = Color.White, fontWeight = FontWeight.SemiBold)
         }
     }
 }
@@ -66,6 +78,13 @@ fun TopNewsItem(newsData: NewsData, onNewsClick: () -> Unit = {}) {
 @Preview(showBackground = true)
 @Composable
 fun TopNewsPreview() {
-    TopNews(navController = rememberNavController())
-//    TopNewsItem(MockData.topNewsList[4])
+
+    TopNewsItem(
+        TopNewsArticle(
+            author = "Thomas Barrabi",
+            title = "Sen. Murkowski slams Dems over 'show votes' on federal election bills - Fox News",
+            description = "Sen. Lisa Murkowski, R-Alaska, slammed Senate Democrats for pursuing “show votes” on federal election bills on Wednesday as Republicans used the filibuster to block consideration the John Lewis Voting Rights Advancement Act.",
+            publishedAt = "2021-11-04T01:57:36Z"
+        )
+    )
 }

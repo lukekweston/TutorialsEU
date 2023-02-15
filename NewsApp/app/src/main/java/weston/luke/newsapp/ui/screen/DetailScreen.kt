@@ -13,8 +13,11 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,14 +25,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.skydoves.landscapist.coil.CoilImage
 import weston.luke.newsapp.MockData
 import weston.luke.newsapp.NewsData
 import weston.luke.newsapp.R
 import weston.luke.newsapp.MockData.getTimeAgo
+import weston.luke.newsapp.models.TopNewsArticle
 
 
 @Composable
-fun DetailScreen(newsData: NewsData, scrollState: ScrollState, navController: NavController) {
+fun DetailScreen(article: TopNewsArticle, scrollState: ScrollState, navController: NavController) {
 
     Scaffold(topBar = {
         DetailTopAppBar(onBackPressed = { navController.popBackStack() })
@@ -43,22 +48,34 @@ fun DetailScreen(newsData: NewsData, scrollState: ScrollState, navController: Na
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(text = "Detail Screen", fontWeight = FontWeight.SemiBold)
-            Image(painter = painterResource(newsData.image), contentDescription = "")
+            CoilImage(
+                imageModel = article.urlToImage,
+                contentScale = ContentScale.Crop,
+                error = ImageBitmap.imageResource(id = R.drawable.breaking_news),
+                placeHolder = ImageBitmap.imageResource(id = R.drawable.breaking_news)
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                IconWithInfo(icon = Icons.Default.Edit, info = newsData.author)
+                IconWithInfo(icon = Icons.Default.Edit, info = article.author ?: "Not Available")
                 IconWithInfo(
                     icon = Icons.Default.DateRange,
-                    info = MockData.stringToDate(newsData.publishedAt).getTimeAgo()
+                    info = MockData.stringToDate(article.publishedAt!!).getTimeAgo()
                 )
 
             }
-            Text(text = newsData.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Text(text = newsData.description, modifier = Modifier.padding(top = 16.dp))
+            Text(
+                text = article.title ?: "Not Available",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
+            Text(
+                text = article.description ?: "Not Available",
+                modifier = Modifier.padding(top = 16.dp)
+            )
 
         }
     }
@@ -92,7 +109,14 @@ fun IconWithInfo(icon: ImageVector, info: String) {
 @Preview(showBackground = true)
 @Composable
 fun DetailScreenPreview() {
-    DetailScreen(MockData.topNewsList[4], rememberScrollState(), rememberNavController())
+    DetailScreen(
+        TopNewsArticle(
+            author = "Thomas Barrabi",
+            title = "Sen. Murkowski slams Dems over 'show votes' on federal election bills - Fox News",
+            description = "Sen. Lisa Murkowski, R-Alaska, slammed Senate Democrats for pursuing “show votes” on federal election bills on Wednesday as Republicans used the filibuster to block consideration the John Lewis Voting Rights Advancement Act.",
+            publishedAt = "2021-11-04T01:57:36Z"
+        ), rememberScrollState(), rememberNavController()
+    )
 }
 
 

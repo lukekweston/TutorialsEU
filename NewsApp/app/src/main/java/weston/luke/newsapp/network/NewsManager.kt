@@ -25,7 +25,7 @@ class NewsManager {
     }
 
     private fun getArticles() {
-        val service = Api.retrofitService.getTopArticles("us", Constants.apiKey)
+        val service = Api.retrofitService.getTopArticles("nz", Constants.apiKey)
         service.enqueue(object : Callback<TopNewsResponse> {
             override fun onResponse(
                 call: Call<TopNewsResponse>,
