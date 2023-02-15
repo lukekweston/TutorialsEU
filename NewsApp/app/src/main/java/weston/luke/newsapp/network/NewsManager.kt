@@ -15,10 +15,19 @@ import weston.luke.newsapp.util.Constants
 class NewsManager {
 
     private val _newsResponse = mutableStateOf(TopNewsResponse())
+    //Just state as this end point is called once on start up
     val newsResponse: State<TopNewsResponse>
         @Composable get() = remember {
             _newsResponse
         }
+
+    private val _getArticleByCategory = mutableStateOf(TopNewsResponse())
+    //Mutable state as the get category end point is hit everytime the user presses a category
+    val getArticleCategory: MutableState<TopNewsResponse>
+        @Composable get() = remember {
+            _getArticleByCategory
+        }
+
     val selectedCategory: MutableState<ArticleCategory?> = mutableStateOf(null)
     init {
         getArticles()
@@ -36,6 +45,27 @@ class NewsManager {
                     Log.d("news", "${_newsResponse.value}")
                 } else {
                     Log.d("error", "${response.errorBody()}")
+                }
+            }
+
+            override fun onFailure(call: Call<TopNewsResponse>, t: Throwable) {
+                Log.d("error", "${t.printStackTrace()}")
+            }
+        })
+    }
+
+    fun getArticlesByCategory(category: String){
+        val service = Api.retrofitService.getArticlesByCategory(category, Constants.apiKey)
+        service.enqueue(object : Callback<TopNewsResponse> {
+            override fun onResponse(
+                call: Call<TopNewsResponse>,
+                response: Response<TopNewsResponse>
+            ) {
+                if (response.isSuccessful) {
+                    _getArticleByCategory.value = response.body()!!
+                    Log.d("category", "${_getArticleByCategory.value}")
+                } else {
+                    Log.d("error", "${response.code()}")
                 }
             }
 
