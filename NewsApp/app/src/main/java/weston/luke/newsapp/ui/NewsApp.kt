@@ -1,5 +1,6 @@
 package weston.luke.newsapp.ui
 
+import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Scaffold
@@ -11,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import weston.luke.newsapp.MockData
 import weston.luke.newsapp.components.BottomMenu
 import weston.luke.newsapp.BottomMenuScreen
+import weston.luke.newsapp.network.NewsManager
 import weston.luke.newsapp.ui.screen.Categories
 import weston.luke.newsapp.ui.screen.DetailScreen
 import weston.luke.newsapp.ui.screen.Sources
@@ -33,7 +35,14 @@ fun MainScreen(navController: NavHostController, scrollState: ScrollState) {
 }
 
 @Composable
-fun Navigation(navController: NavHostController, scrollState: ScrollState) {
+fun Navigation(
+    navController: NavHostController,
+    scrollState: ScrollState,
+    newsManager: NewsManager = NewsManager()
+) {
+    val articles = newsManager.newsResponse.value.articles
+    Log.d("news", "$articles")
+
     NavHost(navController = navController, startDestination = "TopNews") {
         bottomNavigation(navController = navController)
         composable("TopNews") {
