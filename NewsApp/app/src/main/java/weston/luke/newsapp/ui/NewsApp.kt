@@ -92,6 +92,6 @@ fun NavGraphBuilder.bottomNavigation(navController: NavController, articles: Lis
         })
     }
     composable(BottomMenuScreen.Sources.route) {
-        Sources()
+        Sources(newsManager)
     }
 }
