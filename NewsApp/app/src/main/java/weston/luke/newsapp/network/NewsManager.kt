@@ -5,6 +5,7 @@ import androidx.compose.runtime.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.http.Query
 import weston.luke.newsapp.data.ArticleCategory
 import weston.luke.newsapp.data.getAllArticleCategory
 import weston.luke.newsapp.data.getArticleCategory
@@ -31,10 +32,17 @@ class NewsManager {
         }
 
     private val _getArticleByCategory = mutableStateOf(TopNewsResponse())
-    //Mutable state as the get category end point is hit everytime the user presses a category
     val getArticleCategory: MutableState<TopNewsResponse>
         @Composable get() = remember {
             _getArticleByCategory
+        }
+
+    val query = mutableStateOf("")
+
+    private val _searchedNewsResponse = mutableStateOf(TopNewsResponse())
+    val searchedNewsResponse : MutableState<TopNewsResponse>
+        @Composable get() = remember {
+            _searchedNewsResponse
         }
 
     val selectedCategory: MutableState<ArticleCategory?> = mutableStateOf(null)
@@ -94,6 +102,27 @@ class NewsManager {
                 if (response.isSuccessful) {
                     _getArticleByCategory.value = response.body()!!
                     Log.d("category", "${_getArticleByCategory.value}")
+                } else {
+                    Log.d("error", "${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<TopNewsResponse>, t: Throwable) {
+                Log.d("error", "${t.printStackTrace()}")
+            }
+        })
+    }
+
+    fun getSearchedArticles(query: String){
+        val service = Api.retrofitService.getArticlesBySearch(query)
+        service.enqueue(object : Callback<TopNewsResponse> {
+            override fun onResponse(
+                call: Call<TopNewsResponse>,
+                response: Response<TopNewsResponse>
+            ) {
+                if (response.isSuccessful) {
+                    _searchedNewsResponse.value = response.body()!!
+                    Log.d("search", "${_searchedNewsResponse.value}")
                 } else {
                     Log.d("error", "${response.code()}")
                 }

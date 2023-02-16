@@ -40,8 +40,6 @@ fun Sources(newsManager: NewsManager) {
         "TheVerge" to "the-verge"
     )
 
-
-
     Scaffold(topBar = {
         //Add top bar and set its text
         TopAppBar(title = { Text(text = "${newsManager.sourceName.value} Source") },

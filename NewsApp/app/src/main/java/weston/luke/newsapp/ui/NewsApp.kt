@@ -48,38 +48,60 @@ fun Navigation(
     newsManager: NewsManager = NewsManager(),
     paddingValues: PaddingValues
 ) {
-    val articles = newsManager.newsResponse.value.articles
+    val articles = mutableListOf<TopNewsArticle>()
+    //Set the articles to all articles from newsResponse endpoint
+    articles.addAll(
+        newsManager.newsResponse.value.articles ?: listOf<TopNewsArticle>()
+    )
     Log.d("news", "$articles")
-    articles?.let {
-        NavHost(
-            navController = navController,
-            startDestination = BottomMenuScreen.TopNews.route,
-            modifier = Modifier.padding(paddingValues = paddingValues)
-        ) {
-            bottomNavigation(navController = navController, articles, newsManager)
+    NavHost(
+        navController = navController,
+        startDestination = BottomMenuScreen.TopNews.route,
+        modifier = Modifier.padding(paddingValues = paddingValues)
+    ) {
+        bottomNavigation(navController = navController, articles, newsManager)
 
-            composable(
-                "DetailScreen/{index}",
-                //1) get the news id from the path, convert this to an int as we knot the id passed will be an int
-                arguments = listOf(navArgument("index") { type = NavType.IntType })
-            ) { navBackStackEntry ->
-                val index = navBackStackEntry.arguments?.getInt("index")
-                index?.let{
-                    val article = articles[index]
-                    DetailScreen(
-                        article = article,
-                        scrollState = scrollState,
-                        navController = navController
-                    )
+        composable(
+            "DetailScreen/{index}",
+            //1) get the news id from the path, convert this to an int as we knot the id passed will be an int
+            arguments = listOf(navArgument("index") { type = NavType.IntType })
+        ) { navBackStackEntry ->
+            val index = navBackStackEntry.arguments?.getInt("index")
+            index?.let {
+                val article = articles[index]
+                //If there is a search, set the items to the searched items
+                if (newsManager.query.value.isNotEmpty()) {
+                    articles.clear()
+                    articles.addAll(newsManager.searchedNewsResponse.value.articles ?: listOf())
                 }
+                //If there isnt a search set the items to all the news items
+                else{
+                    articles.clear()
+                    articles.addAll(newsManager.newsResponse.value.articles ?: listOf())
+                }
+
+                DetailScreen(
+                    article = article,
+                    scrollState = scrollState,
+                    navController = navController
+                )
             }
         }
     }
 }
 
-fun NavGraphBuilder.bottomNavigation(navController: NavController, articles: List<TopNewsArticle>, newsManager: NewsManager) {
+fun NavGraphBuilder.bottomNavigation(
+    navController: NavController,
+    articles: List<TopNewsArticle>,
+    newsManager: NewsManager
+) {
     composable(BottomMenuScreen.TopNews.route) {
-        TopNews(navController = navController, articles = articles)
+        TopNews(
+            navController = navController,
+            articles = articles,
+            query = newsManager.query,
+            newsManager = newsManager
+        )
     }
     composable(BottomMenuScreen.Categories.route) {
         //Default category when first navigated to
