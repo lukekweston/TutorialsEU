@@ -14,7 +14,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import weston.luke.newsapp.components.BottomMenu
 import weston.luke.newsapp.BottomMenuScreen
-import weston.luke.newsapp.models.TopNewsArticle
+import weston.luke.newsapp.data.models.TopNewsArticle
+import weston.luke.newsapp.network.Api
 import weston.luke.newsapp.network.NewsManager
 import weston.luke.newsapp.ui.screen.Categories
 import weston.luke.newsapp.ui.screen.DetailScreen
@@ -29,14 +30,15 @@ fun NewsApp() {
 }
 
 @Composable
-fun MainScreen(navController: NavHostController, scrollState: ScrollState) {
+fun MainScreen(navController: NavHostController, scrollState: ScrollState, viewModel: MainViewModel) {
     Scaffold(bottomBar = {
         BottomMenu(navController = navController)
     }) {
         Navigation(
             navController = navController,
             scrollState = scrollState,
-            paddingValues = it
+            paddingValues = it,
+            viewModel = viewModel
         )
     }
 }
@@ -45,8 +47,9 @@ fun MainScreen(navController: NavHostController, scrollState: ScrollState) {
 fun Navigation(
     navController: NavHostController,
     scrollState: ScrollState,
-    newsManager: NewsManager = NewsManager(),
-    paddingValues: PaddingValues
+    newsManager: NewsManager = NewsManager(Api.retrofitService),
+    paddingValues: PaddingValues,
+    viewModel: MainViewModel
 ) {
     val articles = mutableListOf<TopNewsArticle>()
     //Set the articles to all articles from newsResponse endpoint
@@ -105,7 +108,7 @@ fun NavGraphBuilder.bottomNavigation(
     }
     composable(BottomMenuScreen.Categories.route) {
         //Default category when first navigated to
-        newsManager.onSelectedCategoryChanged("business")
+       // newsManager.onSelectedCategoryChanged("business")
         newsManager.getArticlesByCategory("business")
 
         Categories(newsManager = newsManager, onFetchCategory = {

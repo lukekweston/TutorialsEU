@@ -1,6 +1,5 @@
 package weston.luke.newsapp.ui.screen
 
-import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -25,7 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import weston.luke.newsapp.R
-import weston.luke.newsapp.models.TopNewsArticle
+import weston.luke.newsapp.data.models.TopNewsArticle
 import weston.luke.newsapp.network.NewsManager
 
 @Composable

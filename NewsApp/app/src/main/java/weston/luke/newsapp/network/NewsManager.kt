@@ -2,18 +2,17 @@ package weston.luke.newsapp.network
 
 import android.util.Log
 import androidx.compose.runtime.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.http.Query
 import weston.luke.newsapp.data.ArticleCategory
-import weston.luke.newsapp.data.getAllArticleCategory
 import weston.luke.newsapp.data.getArticleCategory
-import weston.luke.newsapp.models.TopNewsResponse
-import weston.luke.newsapp.util.Constants
+import weston.luke.newsapp.data.models.TopNewsResponse
 
 
-class NewsManager {
+class NewsManager(private val service: NewsService) {
 
     private val _newsResponse = mutableStateOf(TopNewsResponse())
     //Just state as this end point is called once on start up
@@ -46,29 +45,10 @@ class NewsManager {
         }
 
     val selectedCategory: MutableState<ArticleCategory?> = mutableStateOf(null)
-    init {
-        getArticles()
-    }
 
-    private fun getArticles() {
-        val service = Api.retrofitService.getTopArticles("nz")
-        service.enqueue(object : Callback<TopNewsResponse> {
-            override fun onResponse(
-                call: Call<TopNewsResponse>,
-                response: Response<TopNewsResponse>
-            ) {
-                if (response.isSuccessful) {
-                    _newsResponse.value = response.body()!!
-                    Log.d("news", "${_newsResponse.value}")
-                } else {
-                    Log.d("error", "${response.errorBody()}")
-                }
-            }
+    suspend fun getArticles(country: String): TopNewsResponse = withContext(Dispatchers.IO) {
+        service.getTopArticles(country = country)
 
-            override fun onFailure(call: Call<TopNewsResponse>, t: Throwable) {
-                Log.d("error", "${t.printStackTrace()}")
-            }
-        })
     }
 
     fun getArticleSource(){

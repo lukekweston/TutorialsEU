@@ -24,7 +24,7 @@ import weston.luke.newsapp.R
 import weston.luke.newsapp.data.MockData
 import weston.luke.newsapp.data.MockData.getTimeAgo
 import weston.luke.newsapp.data.getAllArticleCategory
-import weston.luke.newsapp.models.TopNewsArticle
+import weston.luke.newsapp.data.models.TopNewsArticle
 import weston.luke.newsapp.network.NewsManager
 
 
