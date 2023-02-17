@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,14 +25,14 @@ import weston.luke.newsapp.ui.screen.Sources
 import weston.luke.newsapp.ui.screen.TopNews
 
 @Composable
-fun NewsApp() {
+fun NewsApp(viewModel: MainViewModel) {
     val navController = rememberNavController()
     val scrollState = rememberScrollState()
-    MainScreen(navController, scrollState)
+    MainScreen(navController = navController, scrollState = scrollState, mainViewModel = viewModel)
 }
 
 @Composable
-fun MainScreen(navController: NavHostController, scrollState: ScrollState, viewModel: MainViewModel) {
+fun MainScreen(navController: NavHostController, scrollState: ScrollState, mainViewModel: MainViewModel) {
     Scaffold(bottomBar = {
         BottomMenu(navController = navController)
     }) {
@@ -38,7 +40,7 @@ fun MainScreen(navController: NavHostController, scrollState: ScrollState, viewM
             navController = navController,
             scrollState = scrollState,
             paddingValues = it,
-            viewModel = viewModel
+            viewModel = mainViewModel
         )
     }
 }
@@ -52,9 +54,10 @@ fun Navigation(
     viewModel: MainViewModel
 ) {
     val articles = mutableListOf<TopNewsArticle>()
+    val topArticles = viewModel.topNewsResponse.collectAsState().value.articles
     //Set the articles to all articles from newsResponse endpoint
     articles.addAll(
-        newsManager.newsResponse.value.articles ?: listOf<TopNewsArticle>()
+        topArticles ?: listOf()
     )
     Log.d("news", "$articles")
     NavHost(
@@ -62,7 +65,7 @@ fun Navigation(
         startDestination = BottomMenuScreen.TopNews.route,
         modifier = Modifier.padding(paddingValues = paddingValues)
     ) {
-        bottomNavigation(navController = navController, articles, newsManager)
+        bottomNavigation(navController = navController, articles, newsManager, viewModel)
 
         composable(
             "DetailScreen/{index}",
@@ -80,7 +83,7 @@ fun Navigation(
                 //If there isnt a search set the items to all the news items
                 else{
                     articles.clear()
-                    articles.addAll(newsManager.newsResponse.value.articles ?: listOf())
+                    articles.addAll(viewModel.topNewsResponse.value.articles ?: listOf())
                 }
 
                 DetailScreen(
@@ -96,7 +99,8 @@ fun Navigation(
 fun NavGraphBuilder.bottomNavigation(
     navController: NavController,
     articles: List<TopNewsArticle>,
-    newsManager: NewsManager
+    newsManager: NewsManager,
+    viewModel: MainViewModel
 ) {
     composable(BottomMenuScreen.TopNews.route) {
         TopNews(
@@ -108,12 +112,12 @@ fun NavGraphBuilder.bottomNavigation(
     }
     composable(BottomMenuScreen.Categories.route) {
         //Default category when first navigated to
-       // newsManager.onSelectedCategoryChanged("business")
-        newsManager.getArticlesByCategory("business")
+        viewModel.getArticlesByCategory("business")
+        viewModel.selectedCategoryChanged("business")
 
-        Categories(newsManager = newsManager, onFetchCategory = {
-            newsManager.onSelectedCategoryChanged(it)
-            newsManager.getArticlesByCategory(it)
+        Categories(viewModel = viewModel, onFetchCategory = {
+            viewModel.selectedCategoryChanged(it)
+            viewModel.getArticlesByCategory(it)
         })
     }
     composable(BottomMenuScreen.Sources.route) {

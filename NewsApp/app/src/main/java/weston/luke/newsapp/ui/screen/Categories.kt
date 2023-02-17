@@ -26,10 +26,11 @@ import weston.luke.newsapp.data.MockData.getTimeAgo
 import weston.luke.newsapp.data.getAllArticleCategory
 import weston.luke.newsapp.data.models.TopNewsArticle
 import weston.luke.newsapp.network.NewsManager
+import weston.luke.newsapp.ui.MainViewModel
 
 
 @Composable
-fun Categories(onFetchCategory: (String) -> Unit = {}, newsManager: NewsManager) {
+fun Categories(onFetchCategory: (String) -> Unit = {}, viewModel: MainViewModel) {
     val tabItems = getAllArticleCategory()
     Column() {
         LazyRow {
@@ -38,11 +39,11 @@ fun Categories(onFetchCategory: (String) -> Unit = {}, newsManager: NewsManager)
                 CategoryTab(
                     category = category.category,
                     onFetchCategory = onFetchCategory,
-                    isSelected = newsManager.selectedCategory.value == category
+                    isSelected = viewModel.selectedCategory.value == category
                 )
             }
         }
-        ArticleContent(articles = newsManager.getArticleCategory.value.articles ?: listOf())
+        ArticleContent(articles = viewModel.getArticleCategory.value.articles ?: listOf())
     }
 }
 

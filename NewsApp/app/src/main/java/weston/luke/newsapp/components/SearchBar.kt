@@ -23,6 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import weston.luke.newsapp.network.Api
 import weston.luke.newsapp.network.NewsManager
 
 @Composable
@@ -86,5 +87,5 @@ fun SearchBar(query: MutableState<String>, newsManager: NewsManager) {
 @Preview(showBackground = true)
 @Composable
 fun SearchBarPreview() {
-    SearchBar(query = mutableStateOf(""), newsManager = NewsManager())
+    SearchBar(query = mutableStateOf(""), newsManager = NewsManager(Api.retrofitService))
 }
