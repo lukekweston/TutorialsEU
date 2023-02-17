@@ -85,6 +85,7 @@ fun Navigation(
                     articles.clear()
                     articles.addAll(viewModel.topNewsResponse.value.articles ?: listOf())
                 }
+                
 
                 DetailScreen(
                     article = article,
