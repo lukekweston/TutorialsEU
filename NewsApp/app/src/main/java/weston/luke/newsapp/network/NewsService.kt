@@ -4,29 +4,29 @@ package weston.luke.newsapp.network
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
-import weston.luke.newsapp.models.TopNewsResponse
+import weston.luke.newsapp.data.models.TopNewsResponse
 
 
 interface NewsService {
 
     @GET("top-headlines")
-    fun getTopArticles(
+    suspend fun getTopArticles(
         @Query("country") country: String
-    ): Call<TopNewsResponse>
+    ): TopNewsResponse
 
     @GET("top-headlines")
-    fun getArticlesByCategory(
+    suspend fun getArticlesByCategory(
         @Query("category") category: String
-    ): Call<TopNewsResponse>
+    ): TopNewsResponse
 
 
     @GET("everything")
-    fun getArticlesBySources(
+    suspend fun getArticlesBySources(
         @Query("sources") source: String
-    ): Call<TopNewsResponse>
+    ): TopNewsResponse
 
     @GET("everything")
-    fun getArticlesBySearch(
+    suspend fun getArticlesBySearch(
         @Query("q") query: String
-    ): Call<TopNewsResponse>
+    ): TopNewsResponse
 }

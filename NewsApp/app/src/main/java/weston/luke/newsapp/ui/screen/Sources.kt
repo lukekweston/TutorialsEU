@@ -1,6 +1,5 @@
 package weston.luke.newsapp.ui.screen
 
-import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -25,11 +24,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import weston.luke.newsapp.R
-import weston.luke.newsapp.models.TopNewsArticle
+import weston.luke.newsapp.components.ErrorUi
+import weston.luke.newsapp.components.LoadingUi
+import weston.luke.newsapp.data.models.TopNewsArticle
 import weston.luke.newsapp.network.NewsManager
+import weston.luke.newsapp.ui.MainViewModel
 
 @Composable
-fun Sources(newsManager: NewsManager) {
+fun Sources(
+    viewModel: MainViewModel,
+    isLoading: MutableState<Boolean>,
+    isError: MutableState<Boolean>
+) {
 
     val items = listOf(
         "TechCrunch" to "techcrunch",
@@ -42,7 +48,7 @@ fun Sources(newsManager: NewsManager) {
 
     Scaffold(topBar = {
         //Add top bar and set its text
-        TopAppBar(title = { Text(text = "${newsManager.sourceName.value} Source") },
+        TopAppBar(title = { Text(text = "${viewModel.sourceName.collectAsState().value} Source") },
 //      set the actions on the topbar
             actions = {
 //            Variable for keeping track if the menu is or isnt expanded
@@ -61,7 +67,8 @@ fun Sources(newsManager: NewsManager) {
                             //Add a menu item
                             DropdownMenuItem(onClick = {
                                 //Set the source to the clicked items value
-                                newsManager.sourceName.value = it.second
+                                viewModel.sourceName.value = it.second
+                                viewModel.getArticlesBySource()
                                 //Close the Ui
                                 menuExpanded = false
                             }) {
@@ -75,10 +82,20 @@ fun Sources(newsManager: NewsManager) {
     }
     ) {
 
-        newsManager.getArticleSource()
-        val articles = newsManager.getArticleSource.value
-        SourceContent(articles = articles.articles ?: listOf())
-
+        //Display either loading, error or articles
+        when {
+            isLoading.value -> {
+                LoadingUi()
+            }
+            isError.value -> {
+                ErrorUi()
+            }
+            else -> {
+                viewModel.getArticlesBySource()
+                val articles = viewModel.getArticleBySource.collectAsState().value
+                SourceContent(articles = articles.articles ?: listOf())
+            }
+        }
     }
 }
 

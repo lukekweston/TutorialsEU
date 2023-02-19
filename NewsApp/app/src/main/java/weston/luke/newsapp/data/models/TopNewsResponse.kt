@@ -1,4 +1,4 @@
-package weston.luke.newsapp.models
+package weston.luke.newsapp.data.models
 
 data class TopNewsResponse(
     val status: String? = null,

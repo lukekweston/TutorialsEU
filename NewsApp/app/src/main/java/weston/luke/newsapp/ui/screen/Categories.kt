@@ -11,6 +11,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -21,28 +23,51 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.skydoves.landscapist.coil.CoilImage
 import weston.luke.newsapp.R
+import weston.luke.newsapp.components.ErrorUi
+import weston.luke.newsapp.components.LoadingUi
 import weston.luke.newsapp.data.MockData
 import weston.luke.newsapp.data.MockData.getTimeAgo
 import weston.luke.newsapp.data.getAllArticleCategory
-import weston.luke.newsapp.models.TopNewsArticle
+import weston.luke.newsapp.data.models.TopNewsArticle
 import weston.luke.newsapp.network.NewsManager
+import weston.luke.newsapp.ui.MainViewModel
 
 
 @Composable
-fun Categories(onFetchCategory: (String) -> Unit = {}, newsManager: NewsManager) {
+fun Categories(
+    onFetchCategory: (String) -> Unit = {},
+    viewModel: MainViewModel,
+    isLoading: MutableState<Boolean>,
+    isError: MutableState<Boolean>
+) {
     val tabItems = getAllArticleCategory()
-    Column() {
-        LazyRow {
-            items(tabItems.size) {
-                val category = tabItems[it]
-                CategoryTab(
-                    category = category.category,
-                    onFetchCategory = onFetchCategory,
-                    isSelected = newsManager.selectedCategory.value == category
-                )
+    Column {
+
+        when {
+            isLoading.value -> {
+                LoadingUi()
+            }
+            isError.value -> {
+                ErrorUi()
+            }
+            else -> {
+                LazyRow {
+                    items(tabItems.size) {
+                        val category = tabItems[it]
+                        CategoryTab(
+                            category = category.category,
+                            onFetchCategory = onFetchCategory,
+                            isSelected = viewModel.selectedCategory.collectAsState().value == category
+                        )
+                    }
+                }
             }
         }
-        ArticleContent(articles = newsManager.getArticleCategory.value.articles ?: listOf())
+
+
+        ArticleContent(
+            articles = viewModel.getArticleCategory.collectAsState().value.articles ?: listOf()
+        )
     }
 }
 
@@ -117,11 +142,15 @@ fun ArticleContent(articles: List<TopNewsArticle>, modifier: Modifier = Modifier
 
 @Preview
 @Composable
-fun ArticleContentPreview(){
-    ArticleContent(articles = listOf(
-        TopNewsArticle(author = "Thomas Barrabi",
-            title = "Sen. Murkowski slams Dems over 'show votes' on federal election bills - Fox News",
-            description = "Sen. Lisa Murkowski, R-Alaska, slammed Senate Democrats for pursuing “show votes” on federal election bills on Wednesday as Republicans used the filibuster to block consideration the John Lewis Voting Rights Advancement Act.",
-            publishedAt = "2021-11-04T01:57:36Z")
-    ))
+fun ArticleContentPreview() {
+    ArticleContent(
+        articles = listOf(
+            TopNewsArticle(
+                author = "Thomas Barrabi",
+                title = "Sen. Murkowski slams Dems over 'show votes' on federal election bills - Fox News",
+                description = "Sen. Lisa Murkowski, R-Alaska, slammed Senate Democrats for pursuing “show votes” on federal election bills on Wednesday as Republicans used the filibuster to block consideration the John Lewis Voting Rights Advancement Act.",
+                publishedAt = "2021-11-04T01:57:36Z"
+            )
+        )
+    )
 }

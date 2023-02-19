@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,10 +20,13 @@ import androidx.navigation.NavController
 import com.skydoves.landscapist.coil.CoilImage
 import weston.luke.newsapp.data.MockData
 import weston.luke.newsapp.data.MockData.getTimeAgo
-import weston.luke.newsapp.models.TopNewsArticle
+import weston.luke.newsapp.data.models.TopNewsArticle
 import weston.luke.newsapp.R
+import weston.luke.newsapp.components.ErrorUi
+import weston.luke.newsapp.components.LoadingUi
 import weston.luke.newsapp.components.SearchBar
 import weston.luke.newsapp.network.NewsManager
+import weston.luke.newsapp.ui.MainViewModel
 
 
 @Composable
@@ -30,27 +34,41 @@ fun TopNews(
     navController: NavController,
     articles: List<TopNewsArticle>,
     query: MutableState<String>,
-    newsManager: NewsManager
+    viewModel: MainViewModel,
+    isLoading: MutableState<Boolean>,
+    isError: MutableState<Boolean>
 ) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-       // Text(text = "Top News", fontWeight = FontWeight.SemiBold)
-        SearchBar(query = query, newsManager = newsManager)
+        // Text(text = "Top News", fontWeight = FontWeight.SemiBold)
+        SearchBar(query = query, viewModel = viewModel)
 
         val resultList = mutableListOf<TopNewsArticle>()
         val searchedText = query.value
-        if(searchedText != ""){
-            resultList.addAll(newsManager.searchedNewsResponse.value.articles ?: articles)
-        }
-        else{
+        if (searchedText != "") {
+            resultList.addAll(
+                viewModel.getSearchedResponse.collectAsState().value.articles ?: articles
+            )
+        } else {
             resultList.addAll(articles)
         }
-
-        LazyColumn {
-            items(resultList.size) { index ->
-                TopNewsItem(article = resultList[index],
-                    onNewsClick = {
-                        navController.navigate("DetailScreen/$index")
-                    })
+        //If loading, add the loading ui, if error add the error ui, else will be loaded with no error so add and display news items
+        when {
+//            viewModel.isLoading.collectAsState().value
+            isLoading.value -> {
+                LoadingUi()
+            }
+            isError.value -> {
+                ErrorUi()
+            }
+            else -> {
+                LazyColumn {
+                    items(resultList.size) { index ->
+                        TopNewsItem(article = resultList[index],
+                            onNewsClick = {
+                                navController.navigate("DetailScreen/$index")
+                            })
+                    }
+                }
             }
         }
     }
