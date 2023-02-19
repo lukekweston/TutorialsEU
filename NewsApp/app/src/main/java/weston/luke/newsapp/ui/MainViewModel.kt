@@ -1,10 +1,7 @@
 package weston.luke.newsapp.ui
 
 import android.app.Application
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -38,13 +35,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val getArticleCategory: StateFlow<TopNewsResponse>
         get() = _getArticleByCategory
 
-    private val _selectedCategory : MutableStateFlow<ArticleCategory?> = MutableStateFlow(null)
+    private val _selectedCategory: MutableStateFlow<ArticleCategory?> = MutableStateFlow(null)
     val selectedCategory: StateFlow<ArticleCategory?>
         get() = _selectedCategory
 
 
-
-    fun getArticlesByCategory(category: String){
+    fun getArticlesByCategory(category: String) {
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             _getArticleByCategory.value = repository.getArticlesByCategory(category)
@@ -52,9 +48,36 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _isLoading.value = false
     }
 
-    fun selectedCategoryChanged(category: String){
+    val sourceName = MutableStateFlow("techcrunch")
+    private val _getArticleBySource = MutableStateFlow(TopNewsResponse())
+    val getArticleBySource: StateFlow<TopNewsResponse>
+        get() = _getArticleBySource
+
+    val query = MutableStateFlow("")
+    private val _searchedNewsResponse = MutableStateFlow(TopNewsResponse())
+    val getSearchedResponse: StateFlow<TopNewsResponse>
+        get() = _searchedNewsResponse
+
+    fun selectedCategoryChanged(category: String) {
         val newCategory = getArticleCategory(category)
         _selectedCategory.value = newCategory
+    }
+
+
+    fun getArticlesBySource(){
+        _isLoading.value = true
+        viewModelScope.launch(Dispatchers.IO){
+            _getArticleBySource.value = repository.getArticlesBySource(sourceName.value)
+        }
+        _isLoading.value = false
+    }
+
+    fun getSearchedArticles(query : String){
+        _isLoading.value = true
+        viewModelScope.launch(Dispatchers.IO){
+            _searchedNewsResponse.value = repository.getArticlesBySearch(query)
+        }
+        _isLoading.value = false
     }
 
 }

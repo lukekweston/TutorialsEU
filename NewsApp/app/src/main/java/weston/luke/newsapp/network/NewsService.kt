@@ -21,12 +21,12 @@ interface NewsService {
 
 
     @GET("everything")
-    fun getArticlesBySources(
+    suspend fun getArticlesBySources(
         @Query("sources") source: String
-    ): Call<TopNewsResponse>
+    ): TopNewsResponse
 
     @GET("everything")
-    fun getArticlesBySearch(
+    suspend fun getArticlesBySearch(
         @Query("q") query: String
-    ): Call<TopNewsResponse>
+    ): TopNewsResponse
 }

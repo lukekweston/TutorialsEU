@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +24,7 @@ import weston.luke.newsapp.data.models.TopNewsArticle
 import weston.luke.newsapp.R
 import weston.luke.newsapp.components.SearchBar
 import weston.luke.newsapp.network.NewsManager
+import weston.luke.newsapp.ui.MainViewModel
 
 
 @Composable
@@ -30,16 +32,16 @@ fun TopNews(
     navController: NavController,
     articles: List<TopNewsArticle>,
     query: MutableState<String>,
-    newsManager: NewsManager
+    viewModel: MainViewModel
 ) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
        // Text(text = "Top News", fontWeight = FontWeight.SemiBold)
-        SearchBar(query = query, newsManager = newsManager)
+        SearchBar(query = query, viewModel = viewModel)
 
         val resultList = mutableListOf<TopNewsArticle>()
         val searchedText = query.value
         if(searchedText != ""){
-            resultList.addAll(newsManager.searchedNewsResponse.value.articles ?: articles)
+            resultList.addAll(viewModel.getSearchedResponse.collectAsState().value.articles ?: articles)
         }
         else{
             resultList.addAll(articles)

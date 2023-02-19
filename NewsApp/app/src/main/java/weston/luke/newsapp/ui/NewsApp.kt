@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
@@ -65,7 +67,8 @@ fun Navigation(
         startDestination = BottomMenuScreen.TopNews.route,
         modifier = Modifier.padding(paddingValues = paddingValues)
     ) {
-        bottomNavigation(navController = navController, articles, newsManager, viewModel)
+        val queryState = mutableStateOf(viewModel.query.value)
+        bottomNavigation(navController = navController, articles, queryState, viewModel)
 
         composable(
             "DetailScreen/{index}",
@@ -76,16 +79,16 @@ fun Navigation(
             index?.let {
                 val article = articles[index]
                 //If there is a search, set the items to the searched items
-                if (newsManager.query.value.isNotEmpty()) {
+                if (queryState.value != "") {
                     articles.clear()
-                    articles.addAll(newsManager.searchedNewsResponse.value.articles ?: listOf())
+                    articles.addAll(viewModel.getSearchedResponse.value.articles ?: listOf())
                 }
                 //If there isnt a search set the items to all the news items
                 else{
                     articles.clear()
                     articles.addAll(viewModel.topNewsResponse.value.articles ?: listOf())
                 }
-                
+
 
                 DetailScreen(
                     article = article,
@@ -100,15 +103,15 @@ fun Navigation(
 fun NavGraphBuilder.bottomNavigation(
     navController: NavController,
     articles: List<TopNewsArticle>,
-    newsManager: NewsManager,
+    query: MutableState<String>,
     viewModel: MainViewModel
 ) {
     composable(BottomMenuScreen.TopNews.route) {
         TopNews(
             navController = navController,
             articles = articles,
-            query = newsManager.query,
-            newsManager = newsManager
+            query = query,
+            viewModel = viewModel
         )
     }
     composable(BottomMenuScreen.Categories.route) {
@@ -122,6 +125,6 @@ fun NavGraphBuilder.bottomNavigation(
         })
     }
     composable(BottomMenuScreen.Sources.route) {
-        Sources(newsManager)
+        Sources(viewModel = viewModel)
     }
 }

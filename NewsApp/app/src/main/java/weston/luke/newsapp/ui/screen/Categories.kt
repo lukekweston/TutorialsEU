@@ -11,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -39,11 +40,11 @@ fun Categories(onFetchCategory: (String) -> Unit = {}, viewModel: MainViewModel)
                 CategoryTab(
                     category = category.category,
                     onFetchCategory = onFetchCategory,
-                    isSelected = viewModel.selectedCategory.value == category
+                    isSelected = viewModel.selectedCategory.collectAsState().value == category
                 )
             }
         }
-        ArticleContent(articles = viewModel.getArticleCategory.value.articles ?: listOf())
+        ArticleContent(articles = viewModel.getArticleCategory.collectAsState().value.articles ?: listOf())
     }
 }
 
