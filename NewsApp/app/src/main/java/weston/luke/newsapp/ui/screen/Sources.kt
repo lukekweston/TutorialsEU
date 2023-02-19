@@ -24,12 +24,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import weston.luke.newsapp.R
+import weston.luke.newsapp.components.ErrorUi
+import weston.luke.newsapp.components.LoadingUi
 import weston.luke.newsapp.data.models.TopNewsArticle
 import weston.luke.newsapp.network.NewsManager
 import weston.luke.newsapp.ui.MainViewModel
 
 @Composable
-fun Sources(viewModel: MainViewModel) {
+fun Sources(
+    viewModel: MainViewModel,
+    isLoading: MutableState<Boolean>,
+    isError: MutableState<Boolean>
+) {
 
     val items = listOf(
         "TechCrunch" to "techcrunch",
@@ -76,10 +82,20 @@ fun Sources(viewModel: MainViewModel) {
     }
     ) {
 
-        viewModel.getArticlesBySource()
-        val articles = viewModel.getArticleBySource.collectAsState().value
-        SourceContent(articles = articles.articles ?: listOf())
-
+        //Display either loading, error or articles
+        when {
+            isLoading.value -> {
+                LoadingUi()
+            }
+            isError.value -> {
+                ErrorUi()
+            }
+            else -> {
+                viewModel.getArticlesBySource()
+                val articles = viewModel.getArticleBySource.collectAsState().value
+                SourceContent(articles = articles.articles ?: listOf())
+            }
+        }
     }
 }
 

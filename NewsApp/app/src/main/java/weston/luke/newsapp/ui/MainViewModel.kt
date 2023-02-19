@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,15 +21,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val topNewsResponse: StateFlow<TopNewsResponse>
         get() = _newsResponse
 
-    private val _isLoading = MutableStateFlow(true)
+    private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
+
+    private val _isError = MutableStateFlow(false)
+    val isError: StateFlow<Boolean>
+        get() = _isError
 
     fun getTopArticles() {
         _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + errorHandler) {
             _newsResponse.value = repository.getArticles()
+            _isLoading.value = false
         }
-        _isLoading.value = false
     }
 
     private val _getArticleByCategory = MutableStateFlow(TopNewsResponse())
@@ -39,13 +44,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val selectedCategory: StateFlow<ArticleCategory?>
         get() = _selectedCategory
 
+    val errorHandler = CoroutineExceptionHandler { _, error ->
+        if (error is Exception) {
+            _isError.value = true
+        }
+    }
+
 
     fun getArticlesByCategory(category: String) {
         _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + errorHandler) {
             _getArticleByCategory.value = repository.getArticlesByCategory(category)
+            _isLoading.value = false
         }
-        _isLoading.value = false
     }
 
     val sourceName = MutableStateFlow("techcrunch")
@@ -64,20 +75,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    fun getArticlesBySource(){
+    fun getArticlesBySource() {
         _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO + errorHandler) {
             _getArticleBySource.value = repository.getArticlesBySource(sourceName.value)
+            _isLoading.value = false
         }
-        _isLoading.value = false
     }
 
-    fun getSearchedArticles(query : String){
+    fun getSearchedArticles(query: String) {
         _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO + errorHandler) {
             _searchedNewsResponse.value = repository.getArticlesBySearch(query)
+            _isLoading.value = false
         }
-        _isLoading.value = false
     }
 
 }
